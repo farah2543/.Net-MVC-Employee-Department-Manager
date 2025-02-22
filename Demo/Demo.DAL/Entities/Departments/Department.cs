@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Entities.Departments
 {
-    internal class Department : ModelBase
+    public class Department : ModelBase
     {
         public string Name { get; set; } = null!;
 

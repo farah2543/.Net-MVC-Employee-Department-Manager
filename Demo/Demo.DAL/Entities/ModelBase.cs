@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Entities
 {
-    internal class ModelBase
+    public class ModelBase
     {
         public int Id { get; set; }
 

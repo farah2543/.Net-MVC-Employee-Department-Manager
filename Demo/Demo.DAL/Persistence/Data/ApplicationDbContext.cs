@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Demo.DAL.Entities.Departments;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Demo.DAL.Persistence.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext() :base()
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :base(options)
         {
             
         }
@@ -19,10 +20,12 @@ namespace Demo.DAL.Persistence.Data
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=.;Database=MVCProject;Trusted_Connection=true;TrustServerCertificate=true");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server=.;Database=MVCProject;Trusted_Connection=true;TrustServerCertificate=true");
+        //}
+
+        public  DbSet<Department> Departments { get; set; } 
 
 
     }
