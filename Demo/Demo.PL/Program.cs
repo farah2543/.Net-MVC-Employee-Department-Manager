@@ -19,6 +19,7 @@ namespace Demo.PL
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
