@@ -9,7 +9,9 @@ namespace Demo.DAL.Persistence.Repositories.Departments
 {
     public interface IDepartmentRepository
     {
-         ICollection<Department> GetAll(bool asNoTracking = true);
+        IEnumerable<Department> GetAll(bool asNoTracking = true);
+
+        IQueryable<Department> GetAllQuerable();
         Department? GetById(int departmentId);
         int AddDepartment (Department Entity);
 

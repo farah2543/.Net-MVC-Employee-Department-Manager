@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Persistence.Repositories.Departments
 {
-    internal class DepartmentRepositories : IDepartmentRepository
+    public class DepartmentRepository : IDepartmentRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        public DepartmentRepositories(ApplicationDbContext dbContext)
+        public DepartmentRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
             
@@ -51,8 +51,14 @@ namespace Demo.DAL.Persistence.Repositories.Departments
            
         }
 
-   
+        IEnumerable<Department> IDepartmentRepository.GetAll(bool asNoTracking)
+        {
+            throw new NotImplementedException();
+        }
 
-     
+        public IQueryable<Department> GetAllQuerable()
+        {
+            return _dbContext.Departments;
+        }
     }
 }
