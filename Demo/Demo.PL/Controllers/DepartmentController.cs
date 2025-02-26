@@ -136,7 +136,7 @@ namespace Demo.PL.Controllers
         }
 
         [HttpPost]
-        // Show the Creation From
+        // Show the Edit From
         public IActionResult Edit(int id ,DepartmentEditViewModel departmentViewModel)
         {
             if (!ModelState.IsValid)
@@ -183,6 +183,59 @@ namespace Demo.PL.Controllers
 
         }
 
+
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (id is null)
+            {
+                return BadRequest(); //400
+            }
+
+            var department = _services.GetDepartmentsById(id.Value);
+
+            if (department is null)
+            {
+                return NotFound(); //404
+
+            }
+                return View(department);
+          
+
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {  
+            var message = string.Empty;
+
+            try
+            {
+                var Result = _services.DeleteDepartment(id);
+                   
+                if (Result)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    message = "Error when deleting the Department";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                message = _webHostEnvironment.IsDevelopment() ? ex.Message : "Error when deleting the Department";
+
+            }
+            return View(nameof(Index));
+
+            
+
+        }
 
     }
 }
