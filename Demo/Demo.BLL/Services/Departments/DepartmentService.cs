@@ -25,7 +25,7 @@ namespace Demo.BLL.Services.Departments
                 //Description = department.Description,
                 Name = department.Name,
                 Id  = department.Id,
-                code= department.code,
+                Code= department.Code,
                 CreationDate = department.CreationDate,
             }).AsNoTracking().ToList();
 
@@ -44,7 +44,7 @@ namespace Demo.BLL.Services.Departments
                 {
                     Id = department.Id,
                     Name = department.Name,
-                    code = department.code,
+                    Code = department.Code,
                     CreationDate = department.CreationDate,
                     CreatedBy = department.CreatedBy,
                     CreateOn = department.CreateOn,
@@ -64,7 +64,7 @@ namespace Demo.BLL.Services.Departments
         {
             var department = new Department()
             {
-                code = Entity.code,
+                Code = Entity.Code,
                 Description = Entity.Description,
                 Name = Entity.Name,
                 LastModifiedBy = 1,
@@ -83,7 +83,7 @@ namespace Demo.BLL.Services.Departments
         {
             var department = new Department()
             {
-                code = Entity.code,
+                Code = Entity.Code,
                 Description = Entity.Description,
                 Name = Entity.Name,
                 LastModifiedBy = 1,

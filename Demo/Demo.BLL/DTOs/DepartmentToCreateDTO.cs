@@ -12,7 +12,7 @@ namespace Demo.BLL.DTOs
 
         public string? Description { get; set; }
 
-        public string code { get; set; } = null!;
+        public string Code { get; set; } = null!;
 
         public DateOnly CreationDate { get; set; }
 

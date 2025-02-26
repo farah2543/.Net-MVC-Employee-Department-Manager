@@ -15,7 +15,7 @@ namespace Demo.DAL.Persistence.Data.Configuration.Departments
         {
             builder.Property(D =>D.Id).UseIdentityColumn(10,10);
             builder.Property(D => D.Name).HasColumnType("nvarchar(50)").IsRequired();
-            builder.Property(D => D.code).HasColumnType("nvarchar(20)").IsRequired();
+            builder.Property(D => D.Code).HasColumnType("nvarchar(20)").IsRequired();
             builder.Property(D => D.LastModifiedOn).HasComputedColumnSql("GETDATE()");
             builder.Property(D => D.CreateOn).HasDefaultValueSql("GETDATE()");
 
