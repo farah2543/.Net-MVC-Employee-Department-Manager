@@ -86,5 +86,26 @@ namespace Demo.PL.Controllers
         }
 
 
+        [HttpGet]
+
+        public IActionResult Details(int? id)
+        {
+            if(id is null)
+            {
+                return BadRequest(); //400
+            }
+
+            var department = _services.GetDepartmentsById(id.Value);
+
+            if (department is null)
+            {
+                return NotFound(); //404
+                
+            }
+
+            return View(department);
+        }
+
+
     }
 }
