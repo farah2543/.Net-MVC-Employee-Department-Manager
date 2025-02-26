@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Demo.BLL.Services.Departments
 {
-    internal class DepartmentService : IDepartmentServices
+    public class DepartmentService : IDepartmentServices
     {
         private readonly IDepartmentRepository _repository;
         public DepartmentService(IDepartmentRepository repository)
@@ -22,7 +22,7 @@ namespace Demo.BLL.Services.Departments
         {
             var departments = _repository.GetAllQuerable().Select(department => new DepartmentToReturnDto
             {
-                Description = department.Description,
+                //Description = department.Description,
                 Name = department.Name,
                 Id  = department.Id,
                 code= department.code,
