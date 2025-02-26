@@ -1,5 +1,6 @@
 ﻿using Demo.BLL.DTOs;
 using Demo.BLL.Services.Departments;
+using Demo.PL.ViewModels.Department;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.PL.Controllers
@@ -104,6 +105,82 @@ namespace Demo.PL.Controllers
             }
 
             return View(department);
+        }
+
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if (id is null)
+            {
+                return BadRequest(); //400
+            }
+
+            var department = _services.GetDepartmentsById(id.Value);
+
+            if (department is null)
+            {
+                return NotFound(); //404
+
+            }
+            return View(new DepartmentEditViewModel()
+            {
+                Code = department.Code,
+                Name = department.Name,
+                Description = department.Description,
+                CreationDate = department.CreationDate,
+            });
+
+
+
+        }
+
+        [HttpPost]
+        // Show the Creation From
+        public IActionResult Edit(int id ,DepartmentEditViewModel departmentViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(departmentViewModel);
+            }
+
+            else
+            {
+                var message = string.Empty;
+
+                try
+                {
+                    var Result = _services.UpdateDepartment(new DepartmentToUpdateDTO()
+                    {
+                        Id = id,
+                        Code = departmentViewModel.Code,
+                        Name = departmentViewModel.Name,
+                        Description = departmentViewModel.Description,
+                        CreationDate = departmentViewModel.CreationDate,
+                    });
+                    if (Result > 0)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        message = "Department cannot be Updated";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+
+                    message = _webHostEnvironment.IsDevelopment() ? ex.Message : "Department Cannot be updated";
+
+                }
+                return View(departmentViewModel);
+
+            }
+
+
+
         }
 
 
