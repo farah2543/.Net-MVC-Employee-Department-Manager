@@ -1,4 +1,6 @@
-﻿using Demo.DAL.Entities.Departments;
+﻿using Demo.DAL.Entities.Common.Enums;
+using Demo.DAL.Entities.Departments;
+using Demo.DAL.Entities.Employees;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,8 +27,8 @@ namespace Demo.DAL.Persistence.Data
         //    optionsBuilder.UseSqlServer("Server=.;Database=MVCProject;Trusted_Connection=true;TrustServerCertificate=true");
         //}
 
-        public  DbSet<Department> Departments { get; set; } 
-
+        public DbSet<Department> Departments { get; set; } 
+        public DbSet <Employee> Employees { get; set; }
 
     }
 }
