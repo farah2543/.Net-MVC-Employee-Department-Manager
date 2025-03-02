@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Demo.DAL.Entities.Departments
+﻿namespace Demo.PL.ViewModels.Department
 {
-    public class Department : ModelBase
+    public class DepartmentEditViewModel
     {
         public string Name { get; set; } = null!;
 
