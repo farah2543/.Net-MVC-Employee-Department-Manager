@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Demo.BLL.Services.Departments
 {
-    internal class DepartmentService : IDepartmentServices
+    public class DepartmentService : IDepartmentServices
     {
         private readonly IDepartmentRepository _repository;
         public DepartmentService(IDepartmentRepository repository)

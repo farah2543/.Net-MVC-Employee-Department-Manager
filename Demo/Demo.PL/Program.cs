@@ -1,3 +1,4 @@
+using Demo.BLL.Services.Departments;
 using Demo.DAL.Persistence.Data;
 using Demo.DAL.Persistence.Repositories.Departments;
 using Demo.DAL.Persistence.Repositories.Employees;
@@ -20,6 +21,7 @@ namespace Demo.PL
         
             });
             builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentRepository,DepartmentServices>
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 
