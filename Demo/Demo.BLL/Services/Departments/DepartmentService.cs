@@ -20,7 +20,7 @@ namespace Demo.BLL.Services.Departments
         }
         public IEnumerable<DepartmentToReturnDto> GetAllDepartments()
         {
-            var departments = _repository.GetAllQuerable().Select(department => new DepartmentToReturnDto
+            var departments = _repository.GetAllQueryable().Select(department => new DepartmentToReturnDto
             {
                 //Description = department.Description,
                 Name = department.Name,
@@ -74,7 +74,7 @@ namespace Demo.BLL.Services.Departments
 
             };
 
-          return  _repository.AddDepartment(department);
+          return  _repository.AddT(department);
                   
           
         }
@@ -94,14 +94,14 @@ namespace Demo.BLL.Services.Departments
 
             };
 
-            return _repository.UpdateDepartment(department);
+            return _repository.UpdateT(department);
         }
         public bool DeleteDepartment(int id)
         {
             var department = _repository.GetById(id);
             if(department is not null)
             {
-                return _repository.DeleteDepartment(department) > 0;
+                return _repository.DeleteT(department) > 0;
             }
             return false;
 

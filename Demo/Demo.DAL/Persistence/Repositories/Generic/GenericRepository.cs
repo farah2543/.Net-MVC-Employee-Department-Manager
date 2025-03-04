@@ -24,10 +24,10 @@ namespace Demo.DAL.Persistence.Repositories.Generic
             if (asNoTracking)
             {
 
-                _dbContext.Set<T>().AsNoTracking().ToList();
+                _dbContext.Set<T>().Where(X=>!X.IsDeleted).AsNoTracking().ToList();
 
             }
-            return _dbContext.Set<T>().ToList();
+            return _dbContext.Set<T>().Where(X => !X.IsDeleted).ToList();
         }
 
         public T? GetById(int departmentId)
@@ -48,7 +48,11 @@ namespace Demo.DAL.Persistence.Repositories.Generic
         }
         public int DeleteT(T Entity)
         {
-            _dbContext.Set<T>().Remove(Entity);
+            //_dbContext.Set<T>().Remove(Entity);
+            //return _dbContext.SaveChanges();
+
+            Entity.IsDeleted = true;
+            _dbContext.Set<T>().Update(Entity);
             return _dbContext.SaveChanges();
 
         }

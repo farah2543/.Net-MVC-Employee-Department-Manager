@@ -1,6 +1,7 @@
 using Demo.BLL.Services.Departments;
 using Demo.DAL.Persistence.Data;
 using Demo.DAL.Persistence.Repositories.Departments;
+using Demo.DAL.Persistence.Repositories.Employees;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -21,6 +22,7 @@ namespace Demo.PL
             });
             builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentServices, DepartmentService>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 
             var app = builder.Build();
