@@ -21,7 +21,7 @@ namespace Demo.PL
         
             });
             builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
-            builder.Services.AddScoped<IDepartmentServices,DepartmentService>();
+            builder.Services.AddScoped<IDepartmentRepository,DepartmentServices>
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 
