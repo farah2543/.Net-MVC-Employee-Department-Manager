@@ -1,13 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Demo.BLL.DTOs
+namespace Demo.BLL.DTOs.Departments
 {
-    public class DepartmentDetailsToReturnDTO
+    public class DepartmentToCreateDTO
     {
+        [Required(ErrorMessage = "The Name is Required Please enter the Name")]
+        public string Name { get; set; } = null!;
+
+        public string? Description { get; set; }
+
+        public string Code { get; set; } = null!;
+
+        public DateOnly CreationDate { get; set; }
+
         public int Id { get; set; }
 
         public int CreatedBy { get; set; }
@@ -16,13 +26,5 @@ namespace Demo.BLL.DTOs
         public DateTime LastModifiedOn { get; set; }
 
         public bool IsDeleted { get; set; }
-
-        public string Name { get; set; } = null!;
-
-        public string? Description { get; set; }
-
-        public string Code { get; set; } = null!;
-
-        public DateOnly CreationDate { get; set; }
     }
 }

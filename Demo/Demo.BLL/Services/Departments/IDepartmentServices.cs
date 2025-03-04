@@ -1,4 +1,4 @@
-﻿using Demo.BLL.DTOs;
+﻿using Demo.BLL.DTOs.Departments;
 using Demo.DAL.Entities.Departments;
 using System;
 using System.Collections.Generic;

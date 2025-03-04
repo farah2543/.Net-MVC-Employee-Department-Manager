@@ -5,16 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Demo.BLL.DTOs
+namespace Demo.BLL.DTOs.Departments
 {
     public class DepartmentToReturnDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-       // public string? Description { get; set; }
+        // public string? Description { get; set; }
         public string Code { get; set; } = null!;
 
-        [Display(Name ="Creation Date")]
+        [Display(Name = "Creation Date")]
         public DateOnly CreationDate { get; set; }
     }
 }
