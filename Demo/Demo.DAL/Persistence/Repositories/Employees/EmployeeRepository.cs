@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Persistence.Repositories.Employees
 {
-    internal class EmployeeRepository :GenericRepository<Employee>, IEmployeeRepository
+    public class EmployeeRepository :GenericRepository<Employee>, IEmployeeRepository
     {
         public EmployeeRepository(ApplicationDbContext applicationDbContext) :base(applicationDbContext) 
         {
