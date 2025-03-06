@@ -50,7 +50,6 @@ namespace Demo.BLL.Services.Employees
                 salary = Entity.Salary,
                 Email = Entity.Email,
                 PhoneNumber = Entity.PhoneNumber,
-                HiringDate = Entity.HiringDate,
                 Gender = Entity.Gender,
                 EmployeeType = Entity.EmployeeType,
                 CreatedBy = 1,

@@ -2,6 +2,8 @@
 using Demo.BLL.DTOs.Employees;
 using Demo.BLL.Services.Employees;
 using Demo.BLL.Services.Employees;
+using Demo.DAL.Entities.Common.Enums;
+
 //using Demo.PL.ViewModels.Employee;
 using Microsoft.AspNetCore.Mvc;
 
@@ -111,79 +113,81 @@ namespace Demo.PL.Controllers
 
 
         [HttpGet]
-        //public IActionResult Edit(int? id)
-        //{
-        //    if (id is null)
-        //    {
-        //        return BadRequest(); //400
-        //    }
+        public IActionResult Edit(int? id)
+        {
+            if (id is null)
+            {
+                return BadRequest(); //400
+            }
 
-        //    var Employee = _services.GetEmployeesById(id.Value);
+            var Employee = _services.GetEmployeesById(id.Value);
 
-        //    if (Employee is null)
-        //    {
-        //        return NotFound(); //404
+            if (Employee is null)
+            {
+                return NotFound(); //404
 
-        //    }
-        //    return View(new EmployeeEditViewModel()
-        //    {
-        //        Code = Employee.Code,
-        //        Name = Employee.Name,
-        //        Description = Employee.Description,
-        //        CreationDate = Employee.CreationDate,
-        //    });
-
-
-
-        //}
-
-        //[HttpPost]
-        //// Show the Edit From
-        //public IActionResult Edit(int id, EmployeeEditViewModel EmployeeViewModel)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(EmployeeViewModel);
-        //    }
-
-        //    else
-        //    {
-        //        var message = string.Empty;
-
-        //        try
-        //        {
-        //            var Result = _services.UpdateEmployee(new EmployeeToUpdateDTO()
-        //            {
-        //                Id = id,
-        //                Code = EmployeeViewModel.Code,
-        //                Name = EmployeeViewModel.Name,
-        //                Description = EmployeeViewModel.Description,
-        //                CreationDate = EmployeeViewModel.CreationDate,
-        //            });
-        //            if (Result > 0)
-        //            {
-        //                return RedirectToAction(nameof(Index));
-        //            }
-        //            else
-        //            {
-        //                message = "Employee cannot be Updated";
-        //            }
-
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            _logger.LogError(ex, ex.Message);
-
-        //            message = _webHostEnvironment.IsDevelopment() ? ex.Message : "Employee Cannot be updated";
-
-        //        }
-        //        return View(EmployeeViewModel);
-
-        //    }
+            }
+            return View(new EmployeeToUpdateDTO()
+            {
+                EmployeeType= Enum.TryParse<EmployeeType>(Employee.EmployeeType,out var EmpType) ? EmpType :default,
+                Gender = Enum.TryParse<Gender>(Employee.Gender, out var gender) ? gender : default,
+                Name = Employee.Name,
+                Address = Employee.Address,
+                Email = Employee.Email,
+                Age = Employee.Age,
+                ISActive = Employee.ISActive,
+                PhoneNumber = Employee.PhoneNumber,
+                HiringDate = Employee.HiringDate,
+                Id= id.Value,   
+                Salary= Employee.Salary,
+               
+            });
 
 
 
-        //}
+        }
+
+        [HttpPost]
+        // Show the Edit From
+        public IActionResult Edit(int id, EmployeeToUpdateDTO EmployeeDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(EmployeeDto);
+            }
+
+            else
+            {
+                var message = string.Empty;
+
+                try
+                {
+                    var Result = _services.UpdateEmployee(EmployeeDto);
+                 
+                    if (Result > 0)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        message = "Employee cannot be Updated";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+
+                    message = _webHostEnvironment.IsDevelopment() ? ex.Message : "Employee Cannot be updated";
+
+                }
+                return View(EmployeeDto);
+
+            }
+
+
+
+        }
 
 
 
