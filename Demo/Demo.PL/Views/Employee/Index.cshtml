@@ -33,13 +33,15 @@
             @foreach(var Employee in Model)
             {
                 <tr> 
-                        <td>@Employee.Name </td>
-                        <td>@Employee.Email </td>
-                        <td>@Employee.EmployeeType </td>
-                        <td>@Employee.Age </td>
-                        <td>@Employee.salary </td>
-                        <td>@Employee.ISActive </td>
-                        <td>@Employee.Gender </td>
+
+                    <td> @Html.DisplayFor(E => Employee.Name) </td>
+                    <td> @Html.DisplayFor(E => Employee.Email) </td>
+                    <td> @Html.DisplayFor(E => Employee.EmployeeType) </td>
+                    <td> @Html.DisplayFor(E => Employee.Age) </td>
+                    <td> @Html.DisplayFor(E => Employee.salary) </td>
+                    <td> @Html.DisplayFor(E => Employee.ISActive) </td>
+                    <td> @Html.DisplayFor(E => Employee.Gender) </td>
+                     
                         <td>
                             <a class ="btn btn-primary" asp-controller="Employee" asp-action="Details" asp-route-Id="@Employee.Id"> 
                             <i Class="fas fa-eye"></i> Details
@@ -73,7 +75,7 @@
                 Are you sure you want to delete this Employee? 
               </div>
               <div class="modal-footer">
-                <form asp-action="Delete" asp-route-id="@Employee.Id" class = "mt-4">
+                <form method = "post"  asp-action="Delete" asp-route-id="@Employee.Id" class = "mt-4">
                     <button type="button" class = "btn btn-secondary" data-bs-dismiss="model"> Close</button>
                     <input type = "submit" value = "Delete" class=  "btn btn-danger"></input>
                 </form>
