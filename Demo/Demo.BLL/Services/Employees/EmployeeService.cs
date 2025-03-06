@@ -108,6 +108,12 @@ namespace Demo.BLL.Services.Employees
                     PhoneNumber = Employee.PhoneNumber,
                     Gender = Employee.Gender.ToString(),
                     EmployeeType = Employee.EmployeeType.ToString(),
+                    HiringDate = Employee.HiringDate,
+                    CreatedBy = Employee.CreatedBy,
+                    CreateOn = Employee.CreateOn,
+                    LastModifiedBy = Employee.LastModifiedBy,
+                    LastModifiedOn = Employee.LastModifiedOn,
+
 
 
                 };
