@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Demo.BLL.DTOs.Departments
+namespace Demo.BLL.DTOs.Employees
 {
     public class EmployeeToUpdateDTO
     {

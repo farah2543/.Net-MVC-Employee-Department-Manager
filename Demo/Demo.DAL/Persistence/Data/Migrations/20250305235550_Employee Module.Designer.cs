@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.DAL.Persistence.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250304224454_Employee Module")]
+    [Migration("20250305235550_Employee Module")]
     partial class EmployeeModule
     {
         /// <inheritdoc />

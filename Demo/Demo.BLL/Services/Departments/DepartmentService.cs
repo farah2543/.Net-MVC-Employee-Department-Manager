@@ -20,7 +20,7 @@ namespace Demo.BLL.Services.Departments
         }
         public IEnumerable<DepartmentToReturnDto> GetAllDepartments()
         {
-            var departments = _repository.GetAllQueryable().Select(department => new DepartmentToReturnDto
+            var departments = _repository.GetAllQueryable().Where(D=>!D.IsDeleted).Select(department => new DepartmentToReturnDto
             {
                 //Description = department.Description,
                 Name = department.Name,

@@ -74,7 +74,7 @@ namespace Demo.BLL.Services.Employees
 
         public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
         {
-            return _employeeRepository.GetAllQueryable().Select(employee=>new EmployeeToReturnDto()
+            return _employeeRepository.GetAllQueryable().Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
             {
                 Id = employee.Id,
                 Name = employee.Name,
