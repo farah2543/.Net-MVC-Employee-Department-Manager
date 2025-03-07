@@ -73,7 +73,7 @@ namespace Demo.BLL.Services.Employees
 
         public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
         {
-            var query =  _employeeRepository.GetAllEnumrable().Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
+            return _employeeRepository.GetAllQueryable().Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
             {
                 Id = employee.Id,
                 Name = employee.Name,
@@ -86,16 +86,31 @@ namespace Demo.BLL.Services.Employees
 
 
             });
-            var Employees = query.ToList();
-            var count = query.Count();
-            var firstEmployee = query.FirstOrDefault();
-
-            return query;
 
         }
 
+        //public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
+        //{
+        //    var query = _employeeRepository.GetAllEnumrable().Where(E => !E.IsDeleted).Select(employee => new EmployeeToReturnDto()
+        //    {
+        //        Id = employee.Id,
+        //        Name = employee.Name,
+        //        Age = employee.Age,
+        //        salary = employee.salary,
+        //        ISActive = employee.ISActive,
+        //        Email = employee.Email,
+        //        Gender = employee.Gender.ToString(),
+        //        EmployeeType = employee.EmployeeType.ToString(),
 
 
+        //    });
+        //    var Employees = query.ToList();
+        //    var count = query.Count();
+        //    var firstEmployee = query.FirstOrDefault();
+
+        //    return query;
+
+        //}
 
         public EmployeeDetailsToReturnDTO? GetEmployeesById(int id)
         {
