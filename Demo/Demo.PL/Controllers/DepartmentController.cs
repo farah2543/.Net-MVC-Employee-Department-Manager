@@ -8,6 +8,8 @@ namespace Demo.PL.Controllers
 {
     public class DepartmentController : Controller
     {
+
+        #region Services
         private readonly IDepartmentServices _services;
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;   
@@ -20,6 +22,10 @@ namespace Demo.PL.Controllers
             _webHostEnvironment = environment;
 
         }
+
+        #endregion
+
+        #region Index
         [HttpGet]
         public IActionResult Index() // Master action (Main page)
         {
@@ -27,6 +33,9 @@ namespace Demo.PL.Controllers
             return View(departments);
                 
         }
+        #endregion
+
+        #region Create
 
         [HttpGet]
         // Show the Creation From
@@ -37,7 +46,10 @@ namespace Demo.PL.Controllers
 
         }
 
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         // Show the Creation From
         public IActionResult Create(DepartmentToCreateDTO departmentDto)
         {
@@ -87,7 +99,11 @@ namespace Demo.PL.Controllers
 
         }
 
+        #endregion
 
+
+
+        #region Details
         [HttpGet]
 
         public IActionResult Details(int? id)
@@ -107,6 +123,11 @@ namespace Demo.PL.Controllers
 
             return View(department);
         }
+
+        #endregion
+
+
+        #region Edit
 
 
         [HttpGet]
@@ -135,9 +156,10 @@ namespace Demo.PL.Controllers
 
 
         }
-
         [HttpPost]
         // Show the Edit From
+        [ValidateAntiForgeryToken]
+
         public IActionResult Edit(int id ,DepartmentEditViewModel departmentViewModel)
         {
             if (!ModelState.IsValid)
@@ -183,9 +205,11 @@ namespace Demo.PL.Controllers
 
 
         }
+        #endregion
 
 
 
+        #region Delete
         [HttpGet]
         public IActionResult Delete(int? id)
         {
@@ -207,6 +231,8 @@ namespace Demo.PL.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public IActionResult Delete(int id)
         {  
             var message = string.Empty;
@@ -237,6 +263,6 @@ namespace Demo.PL.Controllers
             
 
         }
-
+        #region Delete
     }
 }

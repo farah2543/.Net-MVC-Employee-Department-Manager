@@ -11,6 +11,7 @@ namespace Demo.PL.Controllers
 {
     public class EmployeeController :Controller
     {
+        #region services
         private readonly IEmployeeService _services;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -23,6 +24,9 @@ namespace Demo.PL.Controllers
             _webHostEnvironment = environment;
 
         }
+        #endregion
+
+        #region Index
         [HttpGet]
         public IActionResult Index() // Master action (Main page)
         {
@@ -30,7 +34,10 @@ namespace Demo.PL.Controllers
             return View(Employees);
 
         }
+        #endregion
 
+
+        #region Create
         [HttpGet]
         // Show the Creation From
         public IActionResult Create()
@@ -41,6 +48,8 @@ namespace Demo.PL.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         // Show the Creation From
         public IActionResult Create(EmployeeToCreateDTO employeeDto)
         {
@@ -89,7 +98,10 @@ namespace Demo.PL.Controllers
 
 
         }
+        #endregion
 
+
+        #region Details
 
         [HttpGet]
 
@@ -110,6 +122,11 @@ namespace Demo.PL.Controllers
 
             return View(Employee);
         }
+
+        #endregion
+
+
+        #region Edit
 
 
         [HttpGet]
@@ -147,8 +164,13 @@ namespace Demo.PL.Controllers
 
         }
 
+
+
+
         [HttpPost]
         // Show the Edit From
+        [ValidateAntiForgeryToken]
+
         public IActionResult Edit(int id, EmployeeToUpdateDTO EmployeeDto)
         {
             if (!ModelState.IsValid)
@@ -190,6 +212,10 @@ namespace Demo.PL.Controllers
         }
 
 
+        #endregion
+
+
+        #region Delete
 
         [HttpGet]
         public IActionResult Delete(int? id)
@@ -212,6 +238,8 @@ namespace Demo.PL.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public IActionResult Delete(int id)
         {
             var message = string.Empty;
@@ -242,6 +270,6 @@ namespace Demo.PL.Controllers
 
 
         }
-
+        #endregion
     }
 }
