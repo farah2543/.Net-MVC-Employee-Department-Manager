@@ -26,6 +26,9 @@ namespace Demo.DAL.Persistence.Repositories.Generic
 
 
         public IQueryable<T> GetAllQueryable();
+        public IEnumerable <T> GetAllEnumrable();
+
+       
         
 
 

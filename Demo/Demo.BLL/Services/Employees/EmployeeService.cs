@@ -73,7 +73,7 @@ namespace Demo.BLL.Services.Employees
 
         public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
         {
-            return _employeeRepository.GetAllQueryable().Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
+            var query =  _employeeRepository.GetAllEnumrable().Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
             {
                 Id = employee.Id,
                 Name = employee.Name,
@@ -86,8 +86,16 @@ namespace Demo.BLL.Services.Employees
 
 
             });
+            var Employees = query.ToList();
+            var count = query.Count();
+            var firstEmployee = query.FirstOrDefault();
+
+            return query;
 
         }
+
+
+
 
         public EmployeeDetailsToReturnDTO? GetEmployeesById(int id)
         {

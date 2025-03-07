@@ -63,5 +63,9 @@ namespace Demo.DAL.Persistence.Repositories.Generic
             return _dbContext.Set<T>();
         }
 
+        public IEnumerable<T> GetAllEnumrable()
+        {
+            return _dbContext.Set<T>();
+        }
     }
 }
