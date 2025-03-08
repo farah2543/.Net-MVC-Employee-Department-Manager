@@ -2,6 +2,7 @@
 using Demo.BLL.DTOs.Employees;
 using Demo.DAL.Entities.Employees;
 using Demo.DAL.Persistence.Repositories.Employees;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,7 +80,7 @@ namespace Demo.BLL.Services.Employees
 
         public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
         {
-            return _employeeRepository.GetAllQueryable().Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
+            return _employeeRepository.GetAllQueryable().Include(E=>E.Department).Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
             {
                 Id = employee.Id,
                 Name = employee.Name,
@@ -89,6 +90,7 @@ namespace Demo.BLL.Services.Employees
                 Email = employee.Email,
                 Gender= employee.Gender.ToString(),
                 EmployeeType = employee.EmployeeType.ToString(),
+                Department = employee.Department.Name  //Eager Loading
 
 
             });
@@ -141,6 +143,7 @@ namespace Demo.BLL.Services.Employees
                     CreateOn = Employee.CreateOn,
                     LastModifiedBy = Employee.LastModifiedBy,
                     LastModifiedOn = Employee.LastModifiedOn,
+                    Department= Employee.Department.Name, // Lazy Loading
 
 
 

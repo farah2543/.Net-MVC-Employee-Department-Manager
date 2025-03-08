@@ -23,7 +23,7 @@ namespace Demo.DAL.Entities.Employees
 
 
         // Navigational Property 
-        public Department? Department {  get; set; }  
+        public virtual Department? Department {  get; set; }  
        
         //Foreign key 
 
