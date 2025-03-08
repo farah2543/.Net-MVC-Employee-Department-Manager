@@ -77,14 +77,16 @@ namespace Demo.PL.Controllers
                     });
                     if (Result > 0)
                     {
-                        return RedirectToAction(nameof(Index));
+                        TempData["Message"] = "Department is Created successfully";
                     } 
                     else
                     {
                         message = "Department cannot be created";
+                        TempData["Message"] = message; 
                         ModelState.AddModelError(string.Empty, message);
-                        return View(departmentViewModel);
                     }
+                    return RedirectToAction(nameof(Index));
+
 
                 }
                 catch (Exception ex)
@@ -193,12 +195,16 @@ namespace Demo.PL.Controllers
                     });
                     if (Result > 0)
                     {
-                        return RedirectToAction(nameof(Index));
+                        TempData["Message"] = "Department Updated successfully";
                     }
                     else
                     {
                         message = "Department cannot be Updated";
+                        TempData["Message"] = message;
+
                     }
+                    return RedirectToAction(nameof(Index));
+
 
                 }
                 catch (Exception ex)
