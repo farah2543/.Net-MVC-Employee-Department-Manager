@@ -51,11 +51,11 @@ namespace Demo.PL.Controllers
         [ValidateAntiForgeryToken]
 
         // Show the Creation From
-        public IActionResult Create(DepartmentToCreateDTO departmentDto)
+        public IActionResult Create(DepartmentViewModel departmentViewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(departmentDto);
+                return View(departmentViewModel);
             }
 
             else
@@ -64,7 +64,14 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.CreateDepartment(departmentDto);
+                    var Result = _services.CreateDepartment(new DepartmentToCreateDTO()
+                    {
+                        Code = departmentViewModel.Code,
+                        Name = departmentViewModel.Name,
+                        Description = departmentViewModel.Description,
+                        CreationDate =departmentViewModel.CreationDate,
+
+                    });
                     if (Result > 0)
                     {
                         return RedirectToAction(nameof(Index));
@@ -73,7 +80,7 @@ namespace Demo.PL.Controllers
                     {
                         message = "Department cannot be created";
                         ModelState.AddModelError(string.Empty, message);
-                        return View(departmentDto);
+                        return View(departmentViewModel);
                     }
 
                 }
@@ -83,7 +90,7 @@ namespace Demo.PL.Controllers
                     if (_webHostEnvironment.IsDevelopment())
                     {
                         message = ex.Message;
-                        return View(departmentDto);
+                        return View(departmentViewModel);
                     }
                     else
                     {
@@ -145,7 +152,7 @@ namespace Demo.PL.Controllers
                 return NotFound(); //404
 
             }
-            return View(new DepartmentEditViewModel()
+            return View(new DepartmentViewModel()
             {
                 Code = department.Code,
                 Name = department.Name,
@@ -160,7 +167,7 @@ namespace Demo.PL.Controllers
         // Show the Edit From
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit(int id ,DepartmentEditViewModel departmentViewModel)
+        public IActionResult Edit(int id ,DepartmentViewModel departmentViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -260,9 +267,10 @@ namespace Demo.PL.Controllers
             }
             return View(nameof(Index));
 
-            
 
+           
         }
-        #region Delete
+        #endregion 
+
     }
 }

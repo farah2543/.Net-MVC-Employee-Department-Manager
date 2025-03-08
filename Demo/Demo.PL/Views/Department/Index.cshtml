@@ -28,30 +28,12 @@
             @foreach(var department in Model)
             {
                 <tr> 
-                        <td>@department.Code </td>
-                        <td>@department.Name </td>
-                        <td>@department.CreationDate </td>
-                        <td>
-                            <a class ="btn btn-primary" asp-controller="Department" asp-action="Details" asp-route-Id="@department.Id"> 
-                            <i Class="fas fa-eye"></i> Details
-                             </a>
-                        </td>
+                        <td>@Html.DisplayFor(d=>department.Code) </td>
+                        <td>@Html.DisplayFor(d => department.Name) </td>
+                        <td>@Html.DisplayFor(d => department.CreationDate) </td>
+                        <partial name = "_ButtonsPartial" model = "@department.Id"></partial>
+                          
 
-                        <td>
-                              <a class ="btn btn-success" asp-controller="Department" asp-action="Edit" asp-route-Id="@department.Id"> 
-                            <i Class = "fas fa-edit"></i> Edit
-                               </a>
-                        </td>
-
-                        <td>
-                               @*  <a class ="btn btn-danger" asp-controller="Department" asp-action="Delete" asp-route-Id="@department.Id">
-                                        <i Class = "fas fa-trash"></i> Delete
-                                </a> *@
-
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                     <i Class = "fas fa-trash"></i> Delete
-                                </button>
-                        </td>
                 </tr>
            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">

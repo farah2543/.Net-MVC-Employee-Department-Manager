@@ -1,0 +1,24 @@
+﻿@model int
+
+<td>
+<a class ="btn btn-primary"  asp-action="Details" asp-route-Id="@Model"> 
+<i Class="fas fa-eye"></i> Details
+    </a>
+</td>
+
+<td>
+    <a class ="btn btn-success" asp-action="Edit" asp-route-Id="@Model"> 
+<i Class = "fas fa-edit"></i> Edit
+    </a>
+</td>
+
+<td>
+    @*  <a class ="btn btn-danger"  asp-action="Delete" asp-route-Id="@Model">
+            <i Class = "fas fa-trash"></i> Delete
+    </a> *@
+
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            <i Class = "fas fa-trash"></i> Delete
+    </button>
+</td>
+
