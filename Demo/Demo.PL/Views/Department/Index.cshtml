@@ -2,9 +2,13 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
+    string? viewDataMSg = ViewData["Message"] as string;
+    string? viewBagMSg = ViewBag.Message;
 }
 
+<div class = "alert alert-info">
+    @ViewData["Message"]
+</div>
 <h1>All Departments</h1>
 <br />
 <br />

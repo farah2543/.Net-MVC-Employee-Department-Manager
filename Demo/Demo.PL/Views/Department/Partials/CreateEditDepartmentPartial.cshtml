@@ -1,6 +1,6 @@
 ﻿
 @model DepartmentViewModel
-
+@ViewData["Action"]
   <form method = "post" asp-controller="Department" asp-action= "@ViewBag.Action">
 
         <div asp-validation-summary="ModelOnly"></div>

@@ -29,6 +29,9 @@ namespace Demo.PL.Controllers
         [HttpGet]
         public IActionResult Index() // Master action (Main page)
         {
+            ViewData["Message"] = "Hello from the ViewData";
+             ViewBag.Message = "Hello from the ViewBag";
+            //ViewBag.Message = new { Message = "Hello from viewBag" , Id =1  };
             var departments = _services.GetAllDepartments();
             return View(departments);
                 
