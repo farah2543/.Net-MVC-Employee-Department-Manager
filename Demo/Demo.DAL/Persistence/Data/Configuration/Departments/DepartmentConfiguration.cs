@@ -19,6 +19,11 @@ namespace Demo.DAL.Persistence.Data.Configuration.Departments
             builder.Property(D => D.LastModifiedOn).HasComputedColumnSql("GETDATE()");
             builder.Property(D => D.CreateOn).HasDefaultValueSql("GETDATE()");
 
+            builder.HasMany(E => E.Employees)
+                .WithOne(D => D.Department)
+                .HasForeignKey(E => E.DepartmentID)
+                .OnDelete(DeleteBehavior.SetNull);
+
         }
     }
 }

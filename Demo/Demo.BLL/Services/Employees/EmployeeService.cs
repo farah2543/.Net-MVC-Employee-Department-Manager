@@ -21,19 +21,21 @@ namespace Demo.BLL.Services.Employees
         {
             Employee employee = new Employee()
             {
-                Name = Entity.Name,
+                CreatedBy = 1,
                 Age = Entity.Age,
+                LastModifiedBy = 1,
+                Name = Entity.Name,
+                Email = Entity.Email,
+                salary = Entity.Salary,
+                Gender = Entity.Gender,
                 Address = Entity.Address,
                 ISActive = Entity.ISActive,
-                salary = Entity.Salary,
-                Email = Entity.Email,
+                LastModifiedOn = DateTime.UtcNow,
                 PhoneNumber = Entity.PhoneNumber,
-                HiringDate = Entity.HiringDate,
-                Gender = Entity.Gender,
+                DepartmentID = Entity.DepartmentId,
                 EmployeeType = Entity.EmployeeType,
-                CreatedBy = 1,
-                LastModifiedBy = 1,
-                LastModifiedOn = DateTime.UtcNow
+
+
             };
            return _employeeRepository.AddT(employee);
         }
@@ -42,19 +44,23 @@ namespace Demo.BLL.Services.Employees
         {
             Employee employee = new Employee()
             {
+                CreatedBy = 1,
                 Id = Entity.Id,
-                Name = Entity.Name,
                 Age = Entity.Age,
+                LastModifiedBy = 1,
+                Name = Entity.Name,
+                Email = Entity.Email,
+                salary = Entity.Salary,
+                Gender = Entity.Gender,
                 Address = Entity.Address,
                 ISActive = Entity.ISActive,
-                salary = Entity.Salary,
-                Email = Entity.Email,
                 PhoneNumber = Entity.PhoneNumber,
-                Gender = Entity.Gender,
+                LastModifiedOn = DateTime.UtcNow,
+                DepartmentID = Entity.DepartmentId,
                 EmployeeType = Entity.EmployeeType,
-                CreatedBy = 1,
-                LastModifiedBy = 1,
-                LastModifiedOn = DateTime.UtcNow
+              
+           
+
             };
             return _employeeRepository.UpdateT(employee);
         }

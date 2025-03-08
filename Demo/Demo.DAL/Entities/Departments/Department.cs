@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demo.DAL.Entities.Employees;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,11 @@ namespace Demo.DAL.Entities.Departments
         public string Code { get; set; } = null!;
 
         public DateOnly CreationDate { get; set; }
+
+        //Navigational property 
+
+        public ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
+
+
     }
 }

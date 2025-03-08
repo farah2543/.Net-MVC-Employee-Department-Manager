@@ -1,5 +1,6 @@
 ﻿using Demo.BLL.DTOs.Departments;
 using Demo.BLL.DTOs.Employees;
+using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.BLL.Services.Employees;
 using Demo.DAL.Entities.Common.Enums;
@@ -15,13 +16,15 @@ namespace Demo.PL.Controllers
         private readonly IEmployeeService _services;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
+
+        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment,IDepartmentServices departmentServices)
         {
             _services = employeeService;
 
             _logger = logger;
 
             _webHostEnvironment = environment;
+
 
         }
         #endregion
@@ -40,8 +43,10 @@ namespace Demo.PL.Controllers
         #region Create
         [HttpGet]
         // Show the Creation From
-        public IActionResult Create()
-        {
+        public IActionResult Create(/*[FromServices] IDepartmentServices departmentServices*/)
+        { 
+            //Send departments from Create Action to Create view 
+            //ViewData["Departments"] = departmentServices.GetAllDepartments();
 
             return View();
 
