@@ -201,6 +201,7 @@ namespace Demo.PL.Controllers
                     {
                         message = "Department cannot be Updated";
                         TempData["Message"] = message;
+                        ModelState.AddModelError(string.Empty, message);
 
                     }
                     return RedirectToAction(nameof(Index));
@@ -259,12 +260,16 @@ namespace Demo.PL.Controllers
                    
                 if (Result)
                 {
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Department Deleted successfully";
                 }
                 else
                 {
-                    message = "Error when deleting the Department";
+                    message = "Department cannot be Deleted";
+                    TempData["Message"] = message;
+                    ModelState.AddModelError(string.Empty, message);
+
                 }
+                return RedirectToAction(nameof(Index));
 
             }
             catch (Exception ex)

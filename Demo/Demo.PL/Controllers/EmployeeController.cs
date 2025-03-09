@@ -90,14 +90,16 @@ namespace Demo.PL.Controllers
                     });
                     if (Result > 0)
                     {
-                        return RedirectToAction(nameof(Index));
+                        TempData["Message"] = "Employee is Created successfully";
+
                     }
                     else
                     {
                         message = "Employee cannot be created";
+                        TempData["Message"] = message;
                         ModelState.AddModelError(string.Empty, message);
-                        return View(employeeDto);
                     }
+                    return RedirectToAction(nameof(Index));
 
                 }
                 catch (Exception ex)
@@ -214,12 +216,17 @@ namespace Demo.PL.Controllers
                  
                     if (Result > 0)
                     {
-                        return RedirectToAction(nameof(Index));
+                        TempData["Message"] = "Employee is Updated successfully";
+
                     }
                     else
                     {
                         message = "Employee cannot be Updated";
+                        TempData["Message"] = message;
+                        ModelState.AddModelError(string.Empty, message);
                     }
+                    return RedirectToAction(nameof(Index));
+
 
                 }
                 catch (Exception ex)
@@ -276,12 +283,16 @@ namespace Demo.PL.Controllers
 
                 if (Result)
                 {
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Employee Deleted Successfully";
                 }
                 else
                 {
-                    message = "Error when deleting the Employee";
+                    message = "Employee cannot be created";
+                    TempData["Message"] = message;
+                    ModelState.AddModelError(string.Empty, message);
                 }
+                return RedirectToAction(nameof(Index));
+
 
             }
             catch (Exception ex)
