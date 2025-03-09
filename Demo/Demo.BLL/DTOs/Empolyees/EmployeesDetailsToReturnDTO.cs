@@ -31,5 +31,7 @@ namespace Demo.BLL.DTOs.Employees
 
         public string? Department { get; set; }
 
+        public int? DepartmentId { get; set; }
+
     }
 }

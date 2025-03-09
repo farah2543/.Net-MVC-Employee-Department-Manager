@@ -1,30 +1,26 @@
 ﻿using Demo.DAL.Entities.Common.Enums;
-using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Demo.BLL.DTOs.Employees
+namespace Demo.PL.ViewModels.Employee
 {
-    public class EmployeeToCreateDTO
+    public class EmployeeViewModel
     {
+        public int Id { get; set; }
+
         [Required]
-        [MaxLength(50,ErrorMessage ="The Employee Name Maximum Length is 50 characters")]
-        [MinLength (5,ErrorMessage ="The Employee Name Minimum Length is 5  characters")]
+        [MaxLength(50, ErrorMessage = "The Employee Name Maximum Length is 50 characters")]
+        [MinLength(5, ErrorMessage = "The Employee Name Minimum Length is 5  characters")]
         public string Name { get; set; } = null!;
-        [Range(22,30)]  
+        [Range(22, 30)]
         public int? Age { get; set; }
         [RegularExpression(@"^[0-9]{1,3}-[a-zA-Z]{5,10}-[a-zA-Z]{4,10}-[a-zA-Z]{5,10}$",
-            ErrorMessage =" Address Must be like 123-Street-City-County")]
+            ErrorMessage = " Address Must be like 123-Street-City-County")]
         public string? Address { get; set; }
 
         [EmailAddress]
         public string? Email { get; set; }
 
-        [Display(Name= "Is Active")]
+        [Display(Name = "Is Active")]
         public bool ISActive { get; set; }
 
         [DataType(DataType.Currency)]
@@ -39,7 +35,6 @@ namespace Demo.BLL.DTOs.Employees
         public DateOnly? HiringDate { get; set; }
         public Gender Gender { get; set; }
         public EmployeeType EmployeeType { get; set; }
-
 
         [Display(Name = "Department")]
         public int? DepartmentId { get; set; }

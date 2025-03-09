@@ -143,7 +143,7 @@ namespace Demo.BLL.Services.Employees
                     CreateOn = Employee.CreateOn,
                     LastModifiedBy = Employee.LastModifiedBy,
                     LastModifiedOn = Employee.LastModifiedOn,
-                    Department= Employee.Department.Name, // Lazy Loading
+                    Department= Employee.Department?.Name??"No Department", // Lazy Loading
 
 
 

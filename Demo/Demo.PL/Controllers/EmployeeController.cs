@@ -4,6 +4,10 @@ using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.BLL.Services.Employees;
 using Demo.DAL.Entities.Common.Enums;
+using Demo.DAL.Entities.Employees;
+using Demo.PL.ViewModels.Employee;
+
+
 
 //using Demo.PL.ViewModels.Employee;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +21,7 @@ namespace Demo.PL.Controllers
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment,IDepartmentServices departmentServices)
+        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment/*,IDepartmentServices departmentServices*/)
         {
             _services = employeeService;
 
@@ -56,7 +60,7 @@ namespace Demo.PL.Controllers
         [ValidateAntiForgeryToken]
 
         // Show the Creation From
-        public IActionResult Create(EmployeeToCreateDTO employeeDto)
+        public IActionResult Create(EmployeeToUpdateDTO employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -69,7 +73,21 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.CreateEmployee(employeeDto);
+                    var Result = _services.CreateEmployee(new EmployeeToCreateDTO()
+                    {
+                        EmployeeType = employeeDto.EmployeeType,
+                        Gender = employeeDto.Gender,
+                        Name = employeeDto.Name,
+                        Address = employeeDto.Address,
+                        Email = employeeDto.Email,
+                        Age = employeeDto.Age,
+                        ISActive = employeeDto.ISActive,
+                        PhoneNumber = employeeDto.PhoneNumber,
+                        HiringDate = employeeDto.HiringDate,
+                        Salary = employeeDto.Salary,
+                        DepartmentId = employeeDto.DepartmentId
+
+                    });
                     if (Result > 0)
                     {
                         return RedirectToAction(nameof(Index));
@@ -162,7 +180,9 @@ namespace Demo.PL.Controllers
                 HiringDate = Employee.HiringDate,
                 Id= id.Value,   
                 Salary= Employee.Salary,
-               
+                DepartmentId = Employee.DepartmentId
+
+
             });
 
 
@@ -176,11 +196,11 @@ namespace Demo.PL.Controllers
         // Show the Edit From
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit(int id, EmployeeToUpdateDTO EmployeeDto)
+        public IActionResult Edit(int id, EmployeeToUpdateDTO EmployeeVM)
         {
             if (!ModelState.IsValid)
             {
-                return View(EmployeeDto);
+                return View(EmployeeVM);
             }
 
             else
@@ -189,7 +209,8 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.UpdateEmployee(EmployeeDto);
+                    var Result = _services.UpdateEmployee(EmployeeVM);
+                  
                  
                     if (Result > 0)
                     {
@@ -208,7 +229,7 @@ namespace Demo.PL.Controllers
                     message = _webHostEnvironment.IsDevelopment() ? ex.Message : "Employee Cannot be updated";
 
                 }
-                return View(EmployeeDto);
+                return View(EmployeeVM);
 
             }
 
