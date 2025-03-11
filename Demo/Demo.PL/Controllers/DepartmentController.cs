@@ -1,4 +1,5 @@
-﻿using Demo.BLL.DTOs;
+﻿using AutoMapper;
+using Demo.BLL.DTOs;
 using Demo.BLL.DTOs.Departments;
 using Demo.BLL.Services.Departments;
 using Demo.PL.ViewModels.Department;
@@ -11,12 +12,13 @@ namespace Demo.PL.Controllers
 
         #region Services
         private readonly IDepartmentServices _services;
+        private readonly IMapper _mapper;
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;   
-        public DepartmentController(IDepartmentServices departmentServices, ILogger<DepartmentController> logger,IWebHostEnvironment environment)
+        public DepartmentController(IDepartmentServices departmentServices,IMapper mapper, ILogger<DepartmentController> logger,IWebHostEnvironment environment)
         {
             _services = departmentServices;
-
+            _mapper = mapper;
             _logger = logger;
 
             _webHostEnvironment = environment;
@@ -67,14 +69,9 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.CreateDepartment(new DepartmentToCreateDTO()
-                    {
-                        Code = departmentViewModel.Code,
-                        Name = departmentViewModel.Name,
-                        Description = departmentViewModel.Description,
-                        CreationDate =departmentViewModel.CreationDate,
+                    var departmentCreated = _mapper.Map<DepartmentViewModel, DepartmentToCreateDTO>(departmentViewModel);
+                    var Result = _services.CreateDepartment(departmentCreated);
 
-                    });
                     if (Result > 0)
                     {
                         TempData["Message"] = "Department is Created successfully";
@@ -157,13 +154,9 @@ namespace Demo.PL.Controllers
                 return NotFound(); //404
 
             }
-            return View(new DepartmentViewModel()
-            {
-                Code = department.Code,
-                Name = department.Name,
-                Description = department.Description,
-                CreationDate = department.CreationDate,
-            });
+            var departmentVm = _mapper.Map<DepartmentDetailsToReturnDTO,DepartmentViewModel>(department);
+
+            return View(departmentVm);
 
 
 
@@ -185,14 +178,9 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.UpdateDepartment(new DepartmentToUpdateDTO()
-                    {
-                        Id = id,
-                        Code = departmentViewModel.Code,
-                        Name = departmentViewModel.Name,
-                        Description = departmentViewModel.Description,
-                        CreationDate = departmentViewModel.CreationDate,
-                    });
+                    var departmentToUpdate = _mapper.Map<DepartmentToUpdateDTO>(departmentViewModel);
+                    departmentToUpdate.Id = id;
+                    var Result = _services.UpdateDepartment(departmentToUpdate);
                     if (Result > 0)
                     {
                         TempData["Message"] = "Department Updated successfully";
