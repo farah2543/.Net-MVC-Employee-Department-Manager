@@ -1,6 +1,7 @@
 ﻿using Demo.BLL.DTOs.Departments;
 using Demo.DAL.Entities.Departments;
 using Demo.DAL.Persistence.Repositories.Departments;
+using Demo.DAL.Persistence.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,22 @@ namespace Demo.BLL.Services.Departments
 {
     public class DepartmentService : IDepartmentServices
     {
-        private readonly IDepartmentRepository _repository;
-        public DepartmentService(IDepartmentRepository repository)
+        private readonly IUnitOfWork _unitOfWork;
+
+        //private readonly IDepartmentRepository _repository;
+        //public DepartmentService(IDepartmentRepository repository)
+        //{
+        //    _repository = repository;
+
+        //}
+
+        public DepartmentService(IUnitOfWork unitOfWork)
         {
-            _repository = repository;
-            
+            _unitOfWork = unitOfWork;
         }
         public IEnumerable<DepartmentToReturnDto> GetAllDepartments()
         {
-            var departments = _repository.GetAllQueryable().Where(D=>!D.IsDeleted).Select(department => new DepartmentToReturnDto
+            var departments = _unitOfWork.DepartmentRepository.GetAllQueryable().Where(D=>!D.IsDeleted).Select(department => new DepartmentToReturnDto
             {
                 //Description = department.Description,
                 Name = department.Name,
@@ -37,7 +45,7 @@ namespace Demo.BLL.Services.Departments
 
         public DepartmentDetailsToReturnDTO? GetDepartmentsById(int id)
         {
-            var department = _repository.GetById(id);
+            var department = _unitOfWork.DepartmentRepository.GetById(id);
             if (department is not null)
             {
                 return new DepartmentDetailsToReturnDTO()
@@ -73,8 +81,9 @@ namespace Demo.BLL.Services.Departments
 
 
             };
+            _unitOfWork.DepartmentRepository.AddT(department);
 
-          return  _repository.AddT(department);
+          return  _unitOfWork.Complete();
                   
           
         }
@@ -94,16 +103,19 @@ namespace Demo.BLL.Services.Departments
 
             };
 
-            return _repository.UpdateT(department);
+            _unitOfWork.DepartmentRepository.UpdateT(department);
+
+            return _unitOfWork.Complete();
         }
         public bool DeleteDepartment(int id)
         {
-            var department = _repository.GetById(id);
+            var departmentReop = _unitOfWork.DepartmentRepository;
+            var department = departmentReop.GetById(id);
             if(department is not null)
             {
-                return _repository.DeleteT(department) > 0;
+                 departmentReop.DeleteT(department);
             }
-            return false;
+            return _unitOfWork.Complete() > 0 ;
 
         }
 

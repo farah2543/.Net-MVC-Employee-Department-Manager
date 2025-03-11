@@ -17,12 +17,12 @@ namespace Demo.DAL.Persistence.Repositories.Generic
 
         public T? GetById(int departmentId);
 
-        public int AddT(T Entity);
+        public void AddT(T Entity);
 
 
-        public int UpdateT(T Entity);
+        public void UpdateT(T Entity);
 
-        public int DeleteT(T Entity);
+        public void DeleteT(T Entity);
 
 
         public IQueryable<T> GetAllQueryable();

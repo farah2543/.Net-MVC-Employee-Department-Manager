@@ -3,6 +3,7 @@ using Demo.BLL.Services.Employees;
 using Demo.DAL.Persistence.Data;
 using Demo.DAL.Persistence.Repositories.Departments;
 using Demo.DAL.Persistence.Repositories.Employees;
+using Demo.DAL.Persistence.UnitOfWork;
 using Demo.PL.Mapper.Profiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -23,11 +24,12 @@ namespace Demo.PL
                 .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
         
             },ServiceLifetime.Scoped);
-            builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
+            //builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentServices, DepartmentService>();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            //builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 

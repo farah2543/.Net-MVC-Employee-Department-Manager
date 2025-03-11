@@ -2,6 +2,7 @@
 using Demo.BLL.DTOs.Employees;
 using Demo.DAL.Entities.Employees;
 using Demo.DAL.Persistence.Repositories.Employees;
+using Demo.DAL.Persistence.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,20 @@ namespace Demo.BLL.Services.Employees
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly IEmployeeRepository _employeeRepository;
-        public EmployeeService(IEmployeeRepository employeeRepository) {
+        private readonly IUnitOfWork _unitOfWork;
 
-            _employeeRepository = employeeRepository;
+        //private readonly IEmployeeRepository _employeeRepository;
+        //public EmployeeService(IEmployeeRepository employeeRepository) {
+
+        //    _employeeRepository = employeeRepository;
+        //}
+
+        public EmployeeService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
         }
+
+
         public int CreateEmployee(EmployeeToCreateDTO Entity)
         {
             Employee employee = new Employee()
@@ -38,7 +48,8 @@ namespace Demo.BLL.Services.Employees
 
 
             };
-           return _employeeRepository.AddT(employee);
+            _unitOfWork.EmployeeRepository.AddT(employee);
+            return _unitOfWork.Complete();
         }
 
         public int UpdateEmployee(EmployeeToUpdateDTO Entity)
@@ -63,16 +74,18 @@ namespace Demo.BLL.Services.Employees
            
 
             };
-            return _employeeRepository.UpdateT(employee);
+            _unitOfWork.EmployeeRepository.UpdateT(employee);
+            return _unitOfWork.Complete();
         }
         public bool DeleteEmployee(int id)
         {
-            var employee = _employeeRepository.GetById(id);
+            var employeeRepo = _unitOfWork.EmployeeRepository;
+            var employee = employeeRepo.GetById(id);
             if (employee is not null)
             {
-                return _employeeRepository.DeleteT(employee) > 0;
+                 employeeRepo.DeleteT(employee);
             }
-            return false;
+            return _unitOfWork.Complete() > 0;
 
             
            
@@ -80,7 +93,7 @@ namespace Demo.BLL.Services.Employees
 
         public IEnumerable<EmployeeToReturnDto> GetAllEmployees(string SearchValue)
         {
-            return _employeeRepository.GetAllQueryable().
+            return _unitOfWork.EmployeeRepository.GetAllQueryable().
                 Include(E => E.Department).
                 Where(E => !E.IsDeleted &&
                 (string.IsNullOrEmpty(SearchValue) ||
@@ -128,7 +141,7 @@ namespace Demo.BLL.Services.Employees
 
         public EmployeeDetailsToReturnDTO? GetEmployeesById(int id)
         {
-            var Employee = _employeeRepository.GetById(id);
+            var Employee = _unitOfWork.EmployeeRepository.GetById(id);
 
             if (Employee is not null)
             {
