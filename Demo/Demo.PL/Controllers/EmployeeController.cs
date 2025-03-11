@@ -35,9 +35,9 @@ namespace Demo.PL.Controllers
 
         #region Index
         [HttpGet]
-        public IActionResult Index() // Master action (Main page)
+        public IActionResult Index(string SearchValue) // Master action (Main page)
         {
-            var Employees = _services.GetAllEmployees();
+            var Employees = _services.GetAllEmployees(SearchValue);
             return View(Employees);
 
         }

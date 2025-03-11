@@ -78,22 +78,28 @@ namespace Demo.BLL.Services.Employees
            
         }
 
-        public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
+        public IEnumerable<EmployeeToReturnDto> GetAllEmployees(string SearchValue)
         {
-            return _employeeRepository.GetAllQueryable().Include(E=>E.Department).Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                Age = employee.Age,
-                salary = employee.salary,
-                ISActive = employee.ISActive,
-                Email = employee.Email,
-                Gender= employee.Gender.ToString(),
-                EmployeeType = employee.EmployeeType.ToString(),
-                Department = employee.Department.Name  //Eager Loading
+            return _employeeRepository.GetAllQueryable().
+                Include(E => E.Department).
+                Where(E => !E.IsDeleted &&
+                (string.IsNullOrEmpty(SearchValue) ||
+                E.Name.ToLower().Contains(SearchValue.ToLower()))).
+
+                Select(employee => new EmployeeToReturnDto()
+                {
+                    Id = employee.Id,
+                    Name = employee.Name,
+                    Age = employee.Age,
+                    salary = employee.salary,
+                    ISActive = employee.ISActive,
+                    Email = employee.Email,
+                    Gender = employee.Gender.ToString(),
+                    EmployeeType = employee.EmployeeType.ToString(),
+                    Department = employee.Department.Name  //Eager Loading
 
 
-            });
+                });
 
         }
 

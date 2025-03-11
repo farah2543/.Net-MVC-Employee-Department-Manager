@@ -11,7 +11,7 @@ namespace Demo.BLL.Services.Employees
 {
     public interface IEmployeeService
     {
-        IEnumerable<EmployeeToReturnDto> GetAllEmployees();
+        IEnumerable<EmployeeToReturnDto> GetAllEmployees(string SearchValue);
 
         EmployeeDetailsToReturnDTO? GetEmployeesById(int id);
 
