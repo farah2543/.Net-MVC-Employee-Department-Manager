@@ -8,6 +8,8 @@ namespace Demo.PL.Controllers
 {
     public class DepartmentController : Controller
     {
+
+        #region Services
         private readonly IDepartmentServices _services;
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;   
@@ -20,13 +22,23 @@ namespace Demo.PL.Controllers
             _webHostEnvironment = environment;
 
         }
+
+        #endregion
+
+        #region Index
         [HttpGet]
         public IActionResult Index() // Master action (Main page)
         {
+            ViewData["Message"] = "Hello from the ViewData";
+             ViewBag.Message = "Hello from the ViewBag";
+            //ViewBag.Message = new { Message = "Hello from viewBag" , Id =1  };
             var departments = _services.GetAllDepartments();
             return View(departments);
                 
         }
+        #endregion
+
+        #region Create
 
         [HttpGet]
         // Show the Creation From
@@ -37,13 +49,16 @@ namespace Demo.PL.Controllers
 
         }
 
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         // Show the Creation From
-        public IActionResult Create(DepartmentToCreateDTO departmentDto)
+        public IActionResult Create(DepartmentViewModel departmentViewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(departmentDto);
+                return View(departmentViewModel);
             }
 
             else
@@ -52,17 +67,26 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.CreateDepartment(departmentDto);
+                    var Result = _services.CreateDepartment(new DepartmentToCreateDTO()
+                    {
+                        Code = departmentViewModel.Code,
+                        Name = departmentViewModel.Name,
+                        Description = departmentViewModel.Description,
+                        CreationDate =departmentViewModel.CreationDate,
+
+                    });
                     if (Result > 0)
                     {
-                        return RedirectToAction(nameof(Index));
+                        TempData["Message"] = "Department is Created successfully";
                     } 
                     else
                     {
                         message = "Department cannot be created";
+                        TempData["Message"] = message; 
                         ModelState.AddModelError(string.Empty, message);
-                        return View(departmentDto);
                     }
+                    return RedirectToAction(nameof(Index));
+
 
                 }
                 catch (Exception ex)
@@ -71,7 +95,7 @@ namespace Demo.PL.Controllers
                     if (_webHostEnvironment.IsDevelopment())
                     {
                         message = ex.Message;
-                        return View(departmentDto);
+                        return View(departmentViewModel);
                     }
                     else
                     {
@@ -87,7 +111,11 @@ namespace Demo.PL.Controllers
 
         }
 
+        #endregion
 
+
+
+        #region Details
         [HttpGet]
 
         public IActionResult Details(int? id)
@@ -108,6 +136,11 @@ namespace Demo.PL.Controllers
             return View(department);
         }
 
+        #endregion
+
+
+        #region Edit
+
 
         [HttpGet]
         public IActionResult Edit(int? id)
@@ -124,7 +157,7 @@ namespace Demo.PL.Controllers
                 return NotFound(); //404
 
             }
-            return View(new DepartmentEditViewModel()
+            return View(new DepartmentViewModel()
             {
                 Code = department.Code,
                 Name = department.Name,
@@ -135,10 +168,11 @@ namespace Demo.PL.Controllers
 
 
         }
-
         [HttpPost]
         // Show the Edit From
-        public IActionResult Edit(int id ,DepartmentEditViewModel departmentViewModel)
+        [ValidateAntiForgeryToken]
+
+        public IActionResult Edit(int id ,DepartmentViewModel departmentViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -161,12 +195,17 @@ namespace Demo.PL.Controllers
                     });
                     if (Result > 0)
                     {
-                        return RedirectToAction(nameof(Index));
+                        TempData["Message"] = "Department Updated successfully";
                     }
                     else
                     {
                         message = "Department cannot be Updated";
+                        TempData["Message"] = message;
+                        ModelState.AddModelError(string.Empty, message);
+
                     }
+                    return RedirectToAction(nameof(Index));
+
 
                 }
                 catch (Exception ex)
@@ -183,9 +222,11 @@ namespace Demo.PL.Controllers
 
 
         }
+        #endregion
 
 
 
+        #region Delete
         [HttpGet]
         public IActionResult Delete(int? id)
         {
@@ -207,6 +248,8 @@ namespace Demo.PL.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public IActionResult Delete(int id)
         {  
             var message = string.Empty;
@@ -217,12 +260,16 @@ namespace Demo.PL.Controllers
                    
                 if (Result)
                 {
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Department Deleted successfully";
                 }
                 else
                 {
-                    message = "Error when deleting the Department";
+                    message = "Department cannot be Deleted";
+                    TempData["Message"] = message;
+                    ModelState.AddModelError(string.Empty, message);
+
                 }
+                return RedirectToAction(nameof(Index));
 
             }
             catch (Exception ex)
@@ -234,9 +281,10 @@ namespace Demo.PL.Controllers
             }
             return View(nameof(Index));
 
-            
 
+           
         }
+        #endregion 
 
     }
 }

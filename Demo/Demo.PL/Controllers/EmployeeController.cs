@@ -1,8 +1,13 @@
 ﻿using Demo.BLL.DTOs.Departments;
 using Demo.BLL.DTOs.Employees;
+using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.BLL.Services.Employees;
 using Demo.DAL.Entities.Common.Enums;
+using Demo.DAL.Entities.Employees;
+using Demo.PL.ViewModels.Employee;
+
+
 
 //using Demo.PL.ViewModels.Employee;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +16,12 @@ namespace Demo.PL.Controllers
 {
     public class EmployeeController :Controller
     {
+        #region services
         private readonly IEmployeeService _services;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
+
+        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment/*,IDepartmentServices departmentServices*/)
         {
             _services = employeeService;
 
@@ -22,7 +29,11 @@ namespace Demo.PL.Controllers
 
             _webHostEnvironment = environment;
 
+
         }
+        #endregion
+
+        #region Index
         [HttpGet]
         public IActionResult Index() // Master action (Main page)
         {
@@ -30,19 +41,26 @@ namespace Demo.PL.Controllers
             return View(Employees);
 
         }
+        #endregion
 
+
+        #region Create
         [HttpGet]
         // Show the Creation From
-        public IActionResult Create()
-        {
+        public IActionResult Create(/*[FromServices] IDepartmentServices departmentServices*/)
+        { 
+            //Send departments from Create Action to Create view 
+            //ViewData["Departments"] = departmentServices.GetAllDepartments();
 
             return View();
 
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         // Show the Creation From
-        public IActionResult Create(EmployeeToCreateDTO employeeDto)
+        public IActionResult Create(EmployeeToUpdateDTO employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -55,17 +73,33 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.CreateEmployee(employeeDto);
+                    var Result = _services.CreateEmployee(new EmployeeToCreateDTO()
+                    {
+                        EmployeeType = employeeDto.EmployeeType,
+                        Gender = employeeDto.Gender,
+                        Name = employeeDto.Name,
+                        Address = employeeDto.Address,
+                        Email = employeeDto.Email,
+                        Age = employeeDto.Age,
+                        ISActive = employeeDto.ISActive,
+                        PhoneNumber = employeeDto.PhoneNumber,
+                        HiringDate = employeeDto.HiringDate,
+                        Salary = employeeDto.Salary,
+                        DepartmentId = employeeDto.DepartmentId
+
+                    });
                     if (Result > 0)
                     {
-                        return RedirectToAction(nameof(Index));
+                        TempData["Message"] = "Employee is Created successfully";
+
                     }
                     else
                     {
                         message = "Employee cannot be created";
+                        TempData["Message"] = message;
                         ModelState.AddModelError(string.Empty, message);
-                        return View(employeeDto);
                     }
+                    return RedirectToAction(nameof(Index));
 
                 }
                 catch (Exception ex)
@@ -89,7 +123,10 @@ namespace Demo.PL.Controllers
 
 
         }
+        #endregion
 
+
+        #region Details
 
         [HttpGet]
 
@@ -110,6 +147,11 @@ namespace Demo.PL.Controllers
 
             return View(Employee);
         }
+
+        #endregion
+
+
+        #region Edit
 
 
         [HttpGet]
@@ -140,20 +182,27 @@ namespace Demo.PL.Controllers
                 HiringDate = Employee.HiringDate,
                 Id= id.Value,   
                 Salary= Employee.Salary,
-               
+                DepartmentId = Employee.DepartmentId
+
+
             });
 
 
 
         }
 
+
+
+
         [HttpPost]
         // Show the Edit From
-        public IActionResult Edit(int id, EmployeeToUpdateDTO EmployeeDto)
+        [ValidateAntiForgeryToken]
+
+        public IActionResult Edit(int id, EmployeeToUpdateDTO EmployeeVM)
         {
             if (!ModelState.IsValid)
             {
-                return View(EmployeeDto);
+                return View(EmployeeVM);
             }
 
             else
@@ -162,16 +211,22 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.UpdateEmployee(EmployeeDto);
+                    var Result = _services.UpdateEmployee(EmployeeVM);
+                  
                  
                     if (Result > 0)
                     {
-                        return RedirectToAction(nameof(Index));
+                        TempData["Message"] = "Employee is Updated successfully";
+
                     }
                     else
                     {
                         message = "Employee cannot be Updated";
+                        TempData["Message"] = message;
+                        ModelState.AddModelError(string.Empty, message);
                     }
+                    return RedirectToAction(nameof(Index));
+
 
                 }
                 catch (Exception ex)
@@ -181,7 +236,7 @@ namespace Demo.PL.Controllers
                     message = _webHostEnvironment.IsDevelopment() ? ex.Message : "Employee Cannot be updated";
 
                 }
-                return View(EmployeeDto);
+                return View(EmployeeVM);
 
             }
 
@@ -190,6 +245,10 @@ namespace Demo.PL.Controllers
         }
 
 
+        #endregion
+
+
+        #region Delete
 
         [HttpGet]
         public IActionResult Delete(int? id)
@@ -212,6 +271,8 @@ namespace Demo.PL.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public IActionResult Delete(int id)
         {
             var message = string.Empty;
@@ -222,12 +283,16 @@ namespace Demo.PL.Controllers
 
                 if (Result)
                 {
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Employee Deleted Successfully";
                 }
                 else
                 {
-                    message = "Error when deleting the Employee";
+                    message = "Employee cannot be created";
+                    TempData["Message"] = message;
+                    ModelState.AddModelError(string.Empty, message);
                 }
+                return RedirectToAction(nameof(Index));
+
 
             }
             catch (Exception ex)
@@ -242,6 +307,6 @@ namespace Demo.PL.Controllers
 
 
         }
-
+        #endregion
     }
 }

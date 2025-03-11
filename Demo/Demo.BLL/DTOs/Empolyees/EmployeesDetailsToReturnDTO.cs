@@ -29,5 +29,9 @@ namespace Demo.BLL.DTOs.Employees
 
         public bool IsDeleted { get; set; }
 
+        public string? Department { get; set; }
+
+        public int? DepartmentId { get; set; }
+
     }
 }

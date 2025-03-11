@@ -1,14 +1,9 @@
 ﻿using Demo.DAL.Entities.Common.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Demo.BLL.DTOs.Employees
+namespace Demo.PL.ViewModels.Employee
 {
-    public class EmployeeToUpdateDTO
+    public class EmployeeViewModel
     {
         public int Id { get; set; }
 
@@ -43,6 +38,5 @@ namespace Demo.BLL.DTOs.Employees
 
         [Display(Name = "Department")]
         public int? DepartmentId { get; set; }
-
     }
 }

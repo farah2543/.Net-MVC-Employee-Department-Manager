@@ -2,6 +2,7 @@
 using Demo.BLL.DTOs.Employees;
 using Demo.DAL.Entities.Employees;
 using Demo.DAL.Persistence.Repositories.Employees;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,19 +22,21 @@ namespace Demo.BLL.Services.Employees
         {
             Employee employee = new Employee()
             {
-                Name = Entity.Name,
+                CreatedBy = 1,
                 Age = Entity.Age,
+                LastModifiedBy = 1,
+                Name = Entity.Name,
+                Email = Entity.Email,
+                salary = Entity.Salary,
+                Gender = Entity.Gender,
                 Address = Entity.Address,
                 ISActive = Entity.ISActive,
-                salary = Entity.Salary,
-                Email = Entity.Email,
+                LastModifiedOn = DateTime.UtcNow,
                 PhoneNumber = Entity.PhoneNumber,
-                HiringDate = Entity.HiringDate,
-                Gender = Entity.Gender,
+                DepartmentID = Entity.DepartmentId,
                 EmployeeType = Entity.EmployeeType,
-                CreatedBy = 1,
-                LastModifiedBy = 1,
-                LastModifiedOn = DateTime.UtcNow
+
+
             };
            return _employeeRepository.AddT(employee);
         }
@@ -42,19 +45,23 @@ namespace Demo.BLL.Services.Employees
         {
             Employee employee = new Employee()
             {
+                CreatedBy = 1,
                 Id = Entity.Id,
-                Name = Entity.Name,
                 Age = Entity.Age,
+                LastModifiedBy = 1,
+                Name = Entity.Name,
+                Email = Entity.Email,
+                salary = Entity.Salary,
+                Gender = Entity.Gender,
                 Address = Entity.Address,
                 ISActive = Entity.ISActive,
-                salary = Entity.Salary,
-                Email = Entity.Email,
                 PhoneNumber = Entity.PhoneNumber,
-                Gender = Entity.Gender,
+                LastModifiedOn = DateTime.UtcNow,
+                DepartmentID = Entity.DepartmentId,
                 EmployeeType = Entity.EmployeeType,
-                CreatedBy = 1,
-                LastModifiedBy = 1,
-                LastModifiedOn = DateTime.UtcNow
+              
+           
+
             };
             return _employeeRepository.UpdateT(employee);
         }
@@ -73,7 +80,7 @@ namespace Demo.BLL.Services.Employees
 
         public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
         {
-            return _employeeRepository.GetAllQueryable().Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
+            return _employeeRepository.GetAllQueryable().Include(E=>E.Department).Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
             {
                 Id = employee.Id,
                 Name = employee.Name,
@@ -83,11 +90,35 @@ namespace Demo.BLL.Services.Employees
                 Email = employee.Email,
                 Gender= employee.Gender.ToString(),
                 EmployeeType = employee.EmployeeType.ToString(),
+                Department = employee.Department.Name  //Eager Loading
 
 
             });
 
         }
+
+        //public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
+        //{
+        //    var query = _employeeRepository.GetAllEnumrable().Where(E => !E.IsDeleted).Select(employee => new EmployeeToReturnDto()
+        //    {
+        //        Id = employee.Id,
+        //        Name = employee.Name,
+        //        Age = employee.Age,
+        //        salary = employee.salary,
+        //        ISActive = employee.ISActive,
+        //        Email = employee.Email,
+        //        Gender = employee.Gender.ToString(),
+        //        EmployeeType = employee.EmployeeType.ToString(),
+
+
+        //    });
+        //    var Employees = query.ToList();
+        //    var count = query.Count();
+        //    var firstEmployee = query.FirstOrDefault();
+
+        //    return query;
+
+        //}
 
         public EmployeeDetailsToReturnDTO? GetEmployeesById(int id)
         {
@@ -112,6 +143,7 @@ namespace Demo.BLL.Services.Employees
                     CreateOn = Employee.CreateOn,
                     LastModifiedBy = Employee.LastModifiedBy,
                     LastModifiedOn = Employee.LastModifiedOn,
+                    Department= Employee.Department?.Name??"No Department", // Lazy Loading
 
 
 

@@ -1,0 +1,41 @@
+﻿
+@model DepartmentViewModel
+@ViewData["Action"]
+  <form method = "post" asp-controller="Department" asp-action= "@ViewBag.Action">
+
+        <div asp-validation-summary="ModelOnly"></div>
+
+        <div class="from-group mb-3">
+        @* 
+            <label class="form-label" for= "Code" >Code</label>
+            <input id = "Code" name = "Code" type="text"> </input> *@
+
+            <label class="form-label" asp-for= "Code" >Code</label>
+            <input asp-for="Code" class="form-control"> </input>
+            <span asp-validation-for="Code" class="text-danger"></span>
+
+            <label class="form-label" asp-for= "Name" >Name</label>
+            <input asp-for="Name" class="form-control"> </input>
+            <span asp-validation-for="Name" class="text-danger"></span>
+
+            <label class="form-label" asp-for= "Description" >Description</label>
+            <textarea class="form-control" asp-for="Description"> </textarea>
+
+             <label class="form-label" asp-for= "CreationDate" >CreationDate</label>
+            <input asp-for="CreationDate" type="date" class="form-control"> </input>
+
+        </div>
+    @if (ViewBag.Action == "Create")
+    {
+        <div class "mt-4 m-auto">
+            <input class="btn btn-primary" type = "submit" value= "Create"></input>
+            <a asp-controller="Department" asp-action="Index" class="btn btn-outline-dark">Back To List</a>
+        </div>
+     }
+     else {
+        <div class "mt-4 m-auto">
+            <input class="btn btn-success" type = "submit" value= "Edit"></input>
+            <a asp-controller="Department" asp-action="Index" class="btn btn-outline-dark">Back To List</a>
+        </div>
+     }
+    </form>
