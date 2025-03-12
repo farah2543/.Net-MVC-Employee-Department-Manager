@@ -116,7 +116,8 @@ namespace Demo.BLL.Services.Employees
                     Email = employee.Email,
                     Gender = employee.Gender.ToString(),
                     EmployeeType = employee.EmployeeType.ToString(),
-                    Department = employee.Department.Name  //Eager Loading
+                    Department = employee.Department.Name, //Eager Loading
+                    Image = employee.Image,
 
 
                 });
@@ -170,6 +171,7 @@ namespace Demo.BLL.Services.Employees
                     LastModifiedBy = Employee.LastModifiedBy,
                     LastModifiedOn = Employee.LastModifiedOn,
                     Department= Employee.Department?.Name??"No Department", // Lazy Loading
+                    Image = Employee.Image,
 
 
 

@@ -184,7 +184,9 @@ namespace Demo.PL.Controllers
                 HiringDate = Employee.HiringDate,
                 Id= id.Value,   
                 Salary= Employee.Salary,
-                DepartmentId = Employee.DepartmentId
+                DepartmentId = Employee.DepartmentId,
+              
+
 
 
             });

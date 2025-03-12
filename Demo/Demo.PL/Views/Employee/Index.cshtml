@@ -46,6 +46,7 @@
 {
     <table class ="table table-striped table-hover mt-3" >
         <thead class = "text-center">
+            <th> @Html.DisplayNameFor(E => E.Image) </th>
             <th> @Html.DisplayNameFor(E=>E.Name) </th>
             <th> @Html.DisplayNameFor(E=>E.Email) </th>
             <th> @Html.DisplayNameFor(E=>E.EmployeeType) </th>
@@ -64,7 +65,9 @@
             @foreach(var Employee in Model)
             {
                 <tr> 
-
+                    <td> 
+                        <img src =  "~/files/images/@(Employee.Image is not null ? Employee.Image : "NotFound.png" )" class = "rounded-circle" width = "40" hight = "40"  alt="Employee image" />
+                   </td>
                     <td> @Html.DisplayFor(E => Employee.Name) </td>
                     <td> @Html.DisplayFor(E => Employee.Email) </td>
                     <td> @Html.DisplayFor(E => Employee.EmployeeType) </td>
