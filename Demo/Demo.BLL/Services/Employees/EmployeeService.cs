@@ -59,7 +59,7 @@ namespace Demo.BLL.Services.Employees
             return _unitOfWork.Complete();
         }
 
-        public int UpdateEmployee(EmployeeToUpdateDTO Entity)
+        public int UpdateEmployee(EmployeeToCreateUpdateDTO Entity)
         {
             Employee employee = new Employee()
             {

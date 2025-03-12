@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Demo.BLL.DTOs.Employees
 {
-    public class EmployeeToUpdateDTO
+    public class EmployeeToCreateUpdateDTO
     {
         public int Id { get; set; }
 

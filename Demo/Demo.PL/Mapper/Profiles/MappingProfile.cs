@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Demo.BLL.DTOs.Departments;
+using Demo.BLL.DTOs.Employees;
 using Demo.PL.ViewModels.Department;
 
 namespace Demo.PL.Mapper.Profiles
@@ -8,7 +9,7 @@ namespace Demo.PL.Mapper.Profiles
     {
         public MappingProfile()
         {
-            #region Employee Module
+            #region Department Module
             CreateMap<DepartmentViewModel, DepartmentToCreateDTO>()/*.ReverseMap()*/;
 
             CreateMap<DepartmentDetailsToReturnDTO, DepartmentViewModel>();
@@ -21,7 +22,14 @@ namespace Demo.PL.Mapper.Profiles
             #endregion
 
 
-            #region Department Module 
+            #region Employee Module 
+
+            CreateMap<EmployeeToCreateUpdateDTO, EmployeeToCreateDTO>();
+
+            CreateMap<EmployeeDetailsToReturnDTO, EmployeeToCreateUpdateDTO>();
+
+
+
             #endregion
 
 

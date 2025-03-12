@@ -18,7 +18,7 @@ namespace Demo.BLL.Services.Employees
         int CreateEmployee(EmployeeToCreateDTO Entity);
 
 
-        int UpdateEmployee(EmployeeToUpdateDTO Entity);
+        int UpdateEmployee(EmployeeToCreateUpdateDTO Entity);
 
 
         bool DeleteEmployee(int id);

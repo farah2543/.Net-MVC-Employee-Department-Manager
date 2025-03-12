@@ -1,4 +1,5 @@
-﻿using Demo.BLL.DTOs.Departments;
+﻿using AutoMapper;
+using Demo.BLL.DTOs.Departments;
 using Demo.BLL.DTOs.Employees;
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
@@ -18,13 +19,14 @@ namespace Demo.PL.Controllers
     {
         #region services
         private readonly IEmployeeService _services;
+        private readonly IMapper _mapper;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment/*,IDepartmentServices departmentServices*/)
+        public EmployeeController(IEmployeeService employeeService,IMapper mapper ,ILogger<EmployeeController> logger, IWebHostEnvironment environment/*,IDepartmentServices departmentServices*/)
         {
             _services = employeeService;
-
+            _mapper = mapper;
             _logger = logger;
 
             _webHostEnvironment = environment;
@@ -60,7 +62,7 @@ namespace Demo.PL.Controllers
         [ValidateAntiForgeryToken]
 
         // Show the Creation From
-        public IActionResult Create(EmployeeToUpdateDTO employeeDto)
+        public IActionResult Create(EmployeeToCreateUpdateDTO employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -73,23 +75,9 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.CreateEmployee(new EmployeeToCreateDTO()
-                    {
-                        EmployeeType = employeeDto.EmployeeType,
-                        Gender = employeeDto.Gender,
-                        Name = employeeDto.Name,
-                        Address = employeeDto.Address,
-                        Email = employeeDto.Email,
-                        Age = employeeDto.Age,
-                        ISActive = employeeDto.ISActive,
-                        PhoneNumber = employeeDto.PhoneNumber,
-                        HiringDate = employeeDto.HiringDate,
-                        Salary = employeeDto.Salary,
-                        DepartmentId = employeeDto.DepartmentId,
-                        Image = employeeDto.Image,
-                        
+                    var employeeToCreate = _mapper.Map<EmployeeToCreateUpdateDTO,EmployeeToCreateDTO>(employeeDto);
 
-                    });
+                    var Result = _services.CreateEmployee(employeeToCreate);
                     if (Result > 0)
                     {
                         TempData["Message"] = "Employee is Created successfully";
@@ -171,25 +159,8 @@ namespace Demo.PL.Controllers
                 return NotFound(); //404
 
             }
-            return View(new EmployeeToUpdateDTO()
-            {
-                EmployeeType= Enum.TryParse<EmployeeType>(Employee.EmployeeType,out var EmpType) ? EmpType :default,
-                Gender = Enum.TryParse<Gender>(Employee.Gender, out var gender) ? gender : default,
-                Name = Employee.Name,
-                Address = Employee.Address,
-                Email = Employee.Email,
-                Age = Employee.Age,
-                ISActive = Employee.ISActive,
-                PhoneNumber = Employee.PhoneNumber,
-                HiringDate = Employee.HiringDate,
-                Id= id.Value,   
-                Salary= Employee.Salary,
-                DepartmentId = Employee.DepartmentId,
-              
-
-
-
-            });
+            var employeeToEdit = _mapper.Map<EmployeeDetailsToReturnDTO, EmployeeToCreateUpdateDTO>(Employee);
+            return View(employeeToEdit);
 
 
 
@@ -202,7 +173,7 @@ namespace Demo.PL.Controllers
         // Show the Edit From
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit(int id, EmployeeToUpdateDTO EmployeeVM)
+        public IActionResult Edit(int id, EmployeeToCreateUpdateDTO EmployeeVM)
         {
             if (!ModelState.IsValid)
             {
