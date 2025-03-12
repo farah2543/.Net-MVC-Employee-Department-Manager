@@ -33,5 +33,8 @@ namespace Demo.BLL.DTOs.Employees
 
         public int? DepartmentId { get; set; }
 
+
+        public string? Image { get; set; }   
+
     }
 }

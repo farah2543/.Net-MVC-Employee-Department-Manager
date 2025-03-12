@@ -1,4 +1,5 @@
-﻿using Demo.BLL.DTOs.Departments;
+﻿using Demo.BLL.Common.Services.AttachmentServices;
+using Demo.BLL.DTOs.Departments;
 using Demo.BLL.DTOs.Employees;
 using Demo.DAL.Entities.Employees;
 using Demo.DAL.Persistence.Repositories.Employees;
@@ -15,6 +16,7 @@ namespace Demo.BLL.Services.Employees
     public class EmployeeService : IEmployeeService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAttachmentService _attachmentService;
 
         //private readonly IEmployeeRepository _employeeRepository;
         //public EmployeeService(IEmployeeRepository employeeRepository) {
@@ -22,9 +24,10 @@ namespace Demo.BLL.Services.Employees
         //    _employeeRepository = employeeRepository;
         //}
 
-        public EmployeeService(IUnitOfWork unitOfWork)
+        public EmployeeService(IUnitOfWork unitOfWork,IAttachmentService attachmentService)
         {
             _unitOfWork = unitOfWork;
+           _attachmentService = attachmentService;
         }
 
 
@@ -48,6 +51,10 @@ namespace Demo.BLL.Services.Employees
 
 
             };
+            if(Entity.Image is not null)
+            {
+                employee.Image = _attachmentService.Upload(Entity.Image,"images");
+            }
             _unitOfWork.EmployeeRepository.AddT(employee);
             return _unitOfWork.Complete();
         }

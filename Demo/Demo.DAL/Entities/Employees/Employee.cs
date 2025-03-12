@@ -30,6 +30,9 @@ namespace Demo.DAL.Entities.Employees
         public int ? DepartmentID { get; set; }
 
 
+        public string? Image { get; set; }
+
+
 
         
 

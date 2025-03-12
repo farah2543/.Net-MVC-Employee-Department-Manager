@@ -85,7 +85,9 @@ namespace Demo.PL.Controllers
                         PhoneNumber = employeeDto.PhoneNumber,
                         HiringDate = employeeDto.HiringDate,
                         Salary = employeeDto.Salary,
-                        DepartmentId = employeeDto.DepartmentId
+                        DepartmentId = employeeDto.DepartmentId,
+                        Image = employeeDto.Image,
+                        
 
                     });
                     if (Result > 0)
