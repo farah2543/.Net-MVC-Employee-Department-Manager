@@ -7,6 +7,8 @@ using Demo.BLL.Services.Employees;
 using Demo.DAL.Entities.Common.Enums;
 using Demo.DAL.Entities.Employees;
 using Demo.PL.ViewModels.Employee;
+using Microsoft.AspNetCore.Authorization;
+
 
 
 
@@ -15,6 +17,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.PL.Controllers
 {
+    [Authorize]
+
     public class EmployeeController :Controller
     {
         #region services

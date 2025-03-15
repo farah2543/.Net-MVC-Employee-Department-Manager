@@ -7,6 +7,7 @@ using Demo.DAL.Persistence.Repositories.Departments;
 using Demo.DAL.Persistence.Repositories.Employees;
 using Demo.DAL.Persistence.UnitOfWork;
 using Demo.PL.Mapper.Profiles;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -49,14 +50,18 @@ namespace Demo.PL
                 options.Password.RequireNonAlphanumeric = true;
               
             })
+				.AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).
+                AddCookie((options) =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.AccessDeniedPath = "/Home/Error";
+                    options.LogoutPath = "/Account/Login";
 
+                });
 
-
-				.AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddAuthentication();
-
-            
 
             var app = builder.Build();
 
@@ -71,9 +76,10 @@ namespace Demo.PL
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+          
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

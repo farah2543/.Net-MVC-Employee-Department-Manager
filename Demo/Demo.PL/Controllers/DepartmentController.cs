@@ -2,10 +2,13 @@
 using Demo.BLL.DTOs.Departments;
 using Demo.BLL.Services.Departments;
 using Demo.PL.ViewModels.Department;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.PL.Controllers
 {
+    [Authorize]
+
     public class DepartmentController : Controller
     {
 
