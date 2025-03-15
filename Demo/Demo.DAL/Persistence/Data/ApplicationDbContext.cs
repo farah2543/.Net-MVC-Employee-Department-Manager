@@ -1,5 +1,6 @@
 ﻿using Demo.DAL.Entities.Departments;
 using Demo.DAL.Entities.Employees;
+using Demo.DAL.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Persistence.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :base(options)
         {

@@ -1,11 +1,13 @@
 using Demo.BLL.Common.Services.AttachmentServices;
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
+using Demo.DAL.Entities.Identity;
 using Demo.DAL.Persistence.Data;
 using Demo.DAL.Persistence.Repositories.Departments;
 using Demo.DAL.Persistence.Repositories.Employees;
 using Demo.DAL.Persistence.UnitOfWork;
 using Demo.PL.Mapper.Profiles;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -30,8 +32,31 @@ namespace Demo.PL
             //builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
+
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddTransient<IAttachmentService, AttachmentService>();
+
+            //builder.Services.AddScoped<UserManager<ApplicationUser>>();
+            //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+            //builder.Services.AddScoped<RoleManager<ApplicationUser>>();
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>((options) =>
+            {
+				options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 5;
+				options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+              
+            })
+
+
+
+
+				.AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddAuthentication();
+
+            
 
             var app = builder.Build();
 
@@ -53,7 +78,7 @@ namespace Demo.PL
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Register}/{id?}");
 
             app.Run();
         }
