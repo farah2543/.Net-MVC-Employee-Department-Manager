@@ -7,7 +7,7 @@
 
 
     var departments = new SelectList(
-         departmentService.GetAllDepartments()
+         departmentService.GetAllDepartmentsAsync()
         as IEnumerable<DepartmentToReturnDto>, nameof(DepartmentToReturnDto.Id),
         nameof(DepartmentToReturnDto.Name)
     );

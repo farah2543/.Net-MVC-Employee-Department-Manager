@@ -12,10 +12,11 @@ namespace Demo.DAL.Persistence.Repositories.Generic
 {
     public interface IGenericRepository<T> where T : ModelBase
     {
-        public ICollection<T> GetAll(bool asNoTracking = true);
+        public Task< ICollection<T>> GetAllAsync(bool asNoTracking = true);
 
 
-        public T? GetById(int departmentId);
+        public Task <T?> GetByIdAsync(int departmentId);
+
 
         public void AddT(T Entity);
 

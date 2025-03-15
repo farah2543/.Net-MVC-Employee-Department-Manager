@@ -37,9 +37,9 @@ namespace Demo.PL.Controllers
 
         #region Index
         [HttpGet]
-        public IActionResult Index(string SearchValue) // Master action (Main page)
+        public async Task<IActionResult> Index(string SearchValue) // Master action (Main page)
         {
-            var Employees = _services.GetAllEmployees(SearchValue);
+            var Employees =await _services.GetAllEmployeesAsync(SearchValue);
             return View(Employees);
 
         }
@@ -52,7 +52,7 @@ namespace Demo.PL.Controllers
         public IActionResult Create(/*[FromServices] IDepartmentServices departmentServices*/)
         { 
             //Send departments from Create Action to Create view 
-            //ViewData["Departments"] = departmentServices.GetAllDepartments();
+            //ViewData["Departments"] = departmentServices.GetAllDepartmentsAsync();
 
             return View();
 
@@ -62,7 +62,7 @@ namespace Demo.PL.Controllers
         [ValidateAntiForgeryToken]
 
         // Show the Creation From
-        public IActionResult Create(EmployeeViewModel employeeDto)
+        public async Task<IActionResult> CreateAsync(EmployeeViewModel employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace Demo.PL.Controllers
                 {
                     var employeeToCreate = _mapper.Map<EmployeeViewModel, EmployeeToCreateDTO>(employeeDto);
 
-                    var Result = _services.CreateEmployee(employeeToCreate);
+                    var Result = await _services.CreateEmployeeAsync(employeeToCreate);
                     if (Result > 0)
                     {
                         TempData["Message"] = "Employee is Created successfully";
@@ -120,14 +120,14 @@ namespace Demo.PL.Controllers
 
         [HttpGet]
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> DetailsAsync(int? id)
         {
             if (id is null)
             {
                 return BadRequest(); //400
             }
 
-            var Employee = _services.GetEmployeesById(id.Value);
+            var Employee = await _services.GetEmployeesByIdAsync(id.Value);
 
             if (Employee is null)
             {
@@ -145,14 +145,14 @@ namespace Demo.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> EditAsync(int? id)
         {
             if (id is null)
             {
                 return BadRequest(); //400
             }
 
-            var Employee = _services.GetEmployeesById(id.Value);
+            var Employee = await _services.GetEmployeesByIdAsync(id.Value);
 
             if (Employee is null)
             {
@@ -173,7 +173,7 @@ namespace Demo.PL.Controllers
         // Show the Edit From
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit(int id, EmployeeViewModel EmployeeVM)
+        public async Task<IActionResult> EditAsync(int id, EmployeeViewModel EmployeeVM)
         {
             if (!ModelState.IsValid)
             {
@@ -187,7 +187,7 @@ namespace Demo.PL.Controllers
                 try
                 {
                     var employeeToUpdate = _mapper.Map<EmployeeViewModel, EmployeeToUpdateDTO>(EmployeeVM);
-                    var Result = _services.UpdateEmployee(employeeToUpdate);
+                    var Result = await _services.UpdateEmployeeAsync(employeeToUpdate);
                   
                  
                     if (Result > 0)
@@ -228,14 +228,14 @@ namespace Demo.PL.Controllers
         #region Delete
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> DeleteAsync(int? id)
         {
             if (id is null)
             {
                 return BadRequest(); //400
             }
 
-            var Employee = _services.GetEmployeesById(id.Value);
+            var Employee = await _services.GetEmployeesByIdAsync(id.Value);
 
             if (Employee is null)
             {
@@ -250,13 +250,13 @@ namespace Demo.PL.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             var message = string.Empty;
 
             try
             {
-                var Result = _services.DeleteEmployee(id);
+                var Result = await _services.DeleteEmployeeAsync(id);
 
                 if (Result)
                 {
@@ -286,9 +286,9 @@ namespace Demo.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult DeleteImage(int id)
+        public async Task<IActionResult> DeleteImage(int id)
         {
-            var employee = _services.GetEmployeesById(id);
+            var employee = await _services.GetEmployeesByIdAsync(id);
 
             if (employee == null)
             {
@@ -309,7 +309,7 @@ namespace Demo.PL.Controllers
 
             var employeeToUpdate = _mapper.Map<EmployeeViewModel, EmployeeToUpdateDTO>(employeeToEdit);
 
-            _services.UpdateEmployee(employeeToUpdate);
+            await _services.UpdateEmployeeAsync(employeeToUpdate);
 
             return View(nameof(Index));
         }

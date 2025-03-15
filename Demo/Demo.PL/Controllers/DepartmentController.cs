@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Demo.BLL.DTOs;
+﻿using Demo.BLL.DTOs;
 using Demo.BLL.DTOs.Departments;
 using Demo.BLL.Services.Departments;
 using Demo.PL.ViewModels.Department;
@@ -12,13 +11,12 @@ namespace Demo.PL.Controllers
 
         #region Services
         private readonly IDepartmentServices _services;
-        private readonly IMapper _mapper;
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;   
-        public DepartmentController(IDepartmentServices departmentServices,IMapper mapper, ILogger<DepartmentController> logger,IWebHostEnvironment environment)
+        public DepartmentController(IDepartmentServices departmentServices, ILogger<DepartmentController> logger,IWebHostEnvironment environment)
         {
             _services = departmentServices;
-            _mapper = mapper;
+
             _logger = logger;
 
             _webHostEnvironment = environment;
@@ -29,12 +27,12 @@ namespace Demo.PL.Controllers
 
         #region Index
         [HttpGet]
-        public IActionResult Index() // Master action (Main page)
+        public async Task <IActionResult >Index() // Master action (Main page)
         {
             ViewData["Message"] = "Hello from the ViewData";
              ViewBag.Message = "Hello from the ViewBag";
             //ViewBag.Message = new { Message = "Hello from viewBag" , Id =1  };
-            var departments = _services.GetAllDepartments();
+            var departments =await  _services.GetAllDepartmentsAsync();
             return View(departments);
                 
         }
@@ -56,7 +54,7 @@ namespace Demo.PL.Controllers
         [ValidateAntiForgeryToken]
 
         // Show the Creation From
-        public IActionResult Create(DepartmentViewModel departmentViewModel)
+        public async Task<IActionResult> Create(DepartmentViewModel departmentViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -69,9 +67,14 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var departmentCreated = _mapper.Map<DepartmentViewModel, DepartmentToCreateDTO>(departmentViewModel);
-                    var Result = _services.CreateDepartment(departmentCreated);
+                    var Result = await _services.CreateDepartmentAsync(new DepartmentToCreateDTO()
+                    {
+                        Code = departmentViewModel.Code,
+                        Name = departmentViewModel.Name,
+                        Description = departmentViewModel.Description,
+                        CreationDate =departmentViewModel.CreationDate,
 
+                    });
                     if (Result > 0)
                     {
                         TempData["Message"] = "Department is Created successfully";
@@ -115,14 +118,14 @@ namespace Demo.PL.Controllers
         #region Details
         [HttpGet]
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> DetailsAsync(int? id)
         {
             if(id is null)
             {
                 return BadRequest(); //400
             }
 
-            var department = _services.GetDepartmentsById(id.Value);
+            var department = await _services.GetDepartmentsByIdAsync(id.Value);
 
             if (department is null)
             {
@@ -140,23 +143,27 @@ namespace Demo.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> EditAsync(int? id)
         {
             if (id is null)
             {
                 return BadRequest(); //400
             }
 
-            var department = _services.GetDepartmentsById(id.Value);
+            var department = await _services.GetDepartmentsByIdAsync(id.Value);
 
             if (department is null)
             {
                 return NotFound(); //404
 
             }
-            var departmentVm = _mapper.Map<DepartmentDetailsToReturnDTO,DepartmentViewModel>(department);
-
-            return View(departmentVm);
+            return View(new DepartmentViewModel()
+            {
+                Code = department.Code,
+                Name = department.Name,
+                Description = department.Description,
+                CreationDate = department.CreationDate,
+            });
 
 
 
@@ -165,7 +172,7 @@ namespace Demo.PL.Controllers
         // Show the Edit From
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit(int id ,DepartmentViewModel departmentViewModel)
+        public async Task<IActionResult> Edit(int id ,DepartmentViewModel departmentViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -178,9 +185,14 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var departmentToUpdate = _mapper.Map<DepartmentToUpdateDTO>(departmentViewModel);
-                    departmentToUpdate.Id = id;
-                    var Result = _services.UpdateDepartment(departmentToUpdate);
+                    var Result = await _services.UpdateDepartmentAsync(new DepartmentToUpdateDTO()
+                    {
+                        Id = id,
+                        Code = departmentViewModel.Code,
+                        Name = departmentViewModel.Name,
+                        Description = departmentViewModel.Description,
+                        CreationDate = departmentViewModel.CreationDate,
+                    });
                     if (Result > 0)
                     {
                         TempData["Message"] = "Department Updated successfully";
@@ -216,14 +228,14 @@ namespace Demo.PL.Controllers
 
         #region Delete
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task< IActionResult> Delete(int? id)
         {
             if (id is null)
             {
                 return BadRequest(); //400
             }
 
-            var department = _services.GetDepartmentsById(id.Value);
+            var department = await _services.GetDepartmentsByIdAsync(id.Value);
 
             if (department is null)
             {
@@ -238,13 +250,13 @@ namespace Demo.PL.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {  
             var message = string.Empty;
 
             try
             {
-                var Result = _services.DeleteDepartment(id);
+                var Result =await _services.DeleteDepartmentAsync(id);
                    
                 if (Result)
                 {

@@ -19,22 +19,23 @@ namespace Demo.DAL.Persistence.Repositories.Generic
             _dbContext = dbContext;
 
         }
-        public ICollection<T> GetAll(bool asNoTracking = true)
+        public async Task<ICollection<T>> GetAllAsync(bool asNoTracking = true)
         {
             if (asNoTracking)
             {
 
-                _dbContext.Set<T>().Where(X=>!X.IsDeleted).AsNoTracking().ToList();
+                await _dbContext.Set<T>().Where(X=>!X.IsDeleted).AsNoTracking().ToListAsync();
 
             }
-            return _dbContext.Set<T>().Where(X => !X.IsDeleted).ToList();
+            return await _dbContext.Set<T>().Where(X => !X.IsDeleted).ToListAsync();
         }
 
-        public T? GetById(int departmentId)
+        public async Task<T?> GetByIdAsync(int departmentId)
         {
             //return _dbContext.Departments.Local.FirstOrDefault(d => d.Id == departmentId);
-            return _dbContext.Set<T>().Find(departmentId); // search locally first 
+            return await _dbContext.Set<T>().FindAsync(departmentId); // search locally first 
         }
+
         public void AddT(T Entity)
         {
             _dbContext.Set<T>().Add(Entity);
