@@ -105,7 +105,13 @@ namespace Demo.PL.Controllers
         }
 
 
-    
+        [HttpGet]
+        public new async Task<IActionResult> SignOut()
+        {
+            await _singInManager.SignOutAsync();
+
+            return RedirectToAction(nameof(Login));
+        }
     }
 
 }
