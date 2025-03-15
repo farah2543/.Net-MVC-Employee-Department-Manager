@@ -5,6 +5,7 @@ namespace Demo.PL.ViewModels.Employee
 {
     public class EmployeeViewModel
     {
+
         public int Id { get; set; }
 
         [Required]
@@ -38,5 +39,7 @@ namespace Demo.PL.ViewModels.Employee
 
         [Display(Name = "Department")]
         public int? DepartmentId { get; set; }
+
+        public IFormFile? Image { get; set; }
     }
 }

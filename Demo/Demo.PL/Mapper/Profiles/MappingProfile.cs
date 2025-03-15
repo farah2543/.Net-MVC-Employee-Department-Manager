@@ -2,6 +2,7 @@
 using Demo.BLL.DTOs.Departments;
 using Demo.BLL.DTOs.Employees;
 using Demo.PL.ViewModels.Department;
+using Demo.PL.ViewModels.Employee;
 
 namespace Demo.PL.Mapper.Profiles
 {
@@ -12,10 +13,9 @@ namespace Demo.PL.Mapper.Profiles
             #region Department Module
             CreateMap<DepartmentViewModel, DepartmentToCreateDTO>()/*.ReverseMap()*/;
 
-            CreateMap<DepartmentDetailsToReturnDTO, DepartmentViewModel>();
-
-
             CreateMap<DepartmentViewModel, DepartmentToUpdateDTO>();
+
+            CreateMap<DepartmentDetailsToReturnDTO, DepartmentViewModel>();
 
 
 
@@ -24,9 +24,14 @@ namespace Demo.PL.Mapper.Profiles
 
             #region Employee Module 
 
-            CreateMap<EmployeeToCreateUpdateDTO, EmployeeToCreateDTO>();
+            CreateMap<EmployeeViewModel, EmployeeToCreateDTO>();
 
-            CreateMap<EmployeeDetailsToReturnDTO, EmployeeToCreateUpdateDTO>();
+            CreateMap<EmployeeViewModel, EmployeeToUpdateDTO>();
+
+            CreateMap<EmployeeDetailsToReturnDTO, EmployeeViewModel>()
+                .ForMember(dest => dest.Image, opt => opt.Ignore())
+                .ReverseMap()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image)).ReverseMap();
 
 
 

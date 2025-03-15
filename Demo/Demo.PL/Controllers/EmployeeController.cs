@@ -62,7 +62,7 @@ namespace Demo.PL.Controllers
         [ValidateAntiForgeryToken]
 
         // Show the Creation From
-        public IActionResult Create(EmployeeToCreateUpdateDTO employeeDto)
+        public IActionResult Create(EmployeeViewModel employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -75,7 +75,7 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var employeeToCreate = _mapper.Map<EmployeeToCreateUpdateDTO,EmployeeToCreateDTO>(employeeDto);
+                    var employeeToCreate = _mapper.Map<EmployeeViewModel, EmployeeToCreateDTO>(employeeDto);
 
                     var Result = _services.CreateEmployee(employeeToCreate);
                     if (Result > 0)
@@ -89,7 +89,7 @@ namespace Demo.PL.Controllers
                         TempData["Message"] = message;
                         ModelState.AddModelError(string.Empty, message);
                     }
-                    return RedirectToAction(nameof(Index));
+                    return View(nameof(Index));
 
                 }
                 catch (Exception ex)
@@ -159,7 +159,7 @@ namespace Demo.PL.Controllers
                 return NotFound(); //404
 
             }
-            var employeeToEdit = _mapper.Map<EmployeeDetailsToReturnDTO, EmployeeToCreateUpdateDTO>(Employee);
+            var employeeToEdit = _mapper.Map<EmployeeDetailsToReturnDTO, EmployeeViewModel>(Employee);
             return View(employeeToEdit);
 
 
@@ -173,7 +173,7 @@ namespace Demo.PL.Controllers
         // Show the Edit From
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit(int id, EmployeeToCreateUpdateDTO EmployeeVM)
+        public IActionResult Edit(int id, EmployeeViewModel EmployeeVM)
         {
             if (!ModelState.IsValid)
             {
@@ -186,7 +186,8 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var Result = _services.UpdateEmployee(EmployeeVM);
+                    var employeeToUpdate = _mapper.Map<EmployeeViewModel, EmployeeToUpdateDTO>(EmployeeVM);
+                    var Result = _services.UpdateEmployee(employeeToUpdate);
                   
                  
                     if (Result > 0)
@@ -200,7 +201,7 @@ namespace Demo.PL.Controllers
                         TempData["Message"] = message;
                         ModelState.AddModelError(string.Empty, message);
                     }
-                    return RedirectToAction(nameof(Index));
+                    return View(nameof(Index));
 
 
                 }
@@ -211,7 +212,8 @@ namespace Demo.PL.Controllers
                     message = _webHostEnvironment.IsDevelopment() ? ex.Message : "Employee Cannot be updated";
 
                 }
-                return View(EmployeeVM);
+                return View(nameof(Index));
+
 
             }
 
@@ -266,7 +268,7 @@ namespace Demo.PL.Controllers
                     TempData["Message"] = message;
                     ModelState.AddModelError(string.Empty, message);
                 }
-                return RedirectToAction(nameof(Index));
+                return View(nameof(Index));
 
 
             }
@@ -282,6 +284,41 @@ namespace Demo.PL.Controllers
 
 
         }
+
+        [HttpPost]
+        public IActionResult DeleteImage(int id)
+        {
+            var employee = _services.GetEmployeesById(id);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            // Define the path where images are stored
+            string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/files/images", employee.Image);
+
+            // Check if the image exists and delete it
+            if (!string.IsNullOrEmpty(employee.Image) && System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+            var employeeToEdit = _mapper.Map<EmployeeDetailsToReturnDTO, EmployeeViewModel>(employee);
+
+            employeeToEdit.Image = null;
+
+            var employeeToUpdate = _mapper.Map<EmployeeViewModel, EmployeeToUpdateDTO>(employeeToEdit);
+
+            _services.UpdateEmployee(employeeToUpdate);
+
+            return View(nameof(Index));
+        }
+
+
+
         #endregion
+
+
+
     }
 }
