@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Entities.Common.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
@@ -43,5 +44,10 @@ namespace Demo.BLL.DTOs.Employees
 
         [Display(Name = "Department")]
         public int? DepartmentId { get; set; }
+
+        public IFormFile? Image { get; set; }
+
+
+
     }
 }

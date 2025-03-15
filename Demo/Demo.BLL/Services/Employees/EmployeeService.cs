@@ -1,7 +1,9 @@
-﻿using Demo.BLL.DTOs.Departments;
+﻿using Demo.BLL.Common.Services.AttachmentServices;
+using Demo.BLL.DTOs.Departments;
 using Demo.BLL.DTOs.Employees;
 using Demo.DAL.Entities.Employees;
 using Demo.DAL.Persistence.Repositories.Employees;
+using Demo.DAL.Persistence.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,11 +15,22 @@ namespace Demo.BLL.Services.Employees
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly IEmployeeRepository _employeeRepository;
-        public EmployeeService(IEmployeeRepository employeeRepository) {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IAttachmentService _attachmentService;
 
-            _employeeRepository = employeeRepository;
+        //private readonly IEmployeeRepository _employeeRepository;
+        //public EmployeeService(IEmployeeRepository employeeRepository) {
+
+        //    _employeeRepository = employeeRepository;
+        //}
+
+        public EmployeeService(IUnitOfWork unitOfWork,IAttachmentService attachmentService)
+        {
+            _unitOfWork = unitOfWork;
+           _attachmentService = attachmentService;
         }
+
+
         public int CreateEmployee(EmployeeToCreateDTO Entity)
         {
             Employee employee = new Employee()
@@ -38,10 +51,15 @@ namespace Demo.BLL.Services.Employees
 
 
             };
-           return _employeeRepository.AddT(employee);
+            if(Entity.Image is not null)
+            {
+                employee.Image = _attachmentService.Upload(Entity.Image,"images");
+            }
+            _unitOfWork.EmployeeRepository.AddT(employee);
+            return _unitOfWork.Complete();
         }
 
-        public int UpdateEmployee(EmployeeToUpdateDTO Entity)
+        public int UpdateEmployee(EmployeeToCreateUpdateDTO Entity)
         {
             Employee employee = new Employee()
             {
@@ -63,37 +81,46 @@ namespace Demo.BLL.Services.Employees
            
 
             };
-            return _employeeRepository.UpdateT(employee);
+            _unitOfWork.EmployeeRepository.UpdateT(employee);
+            return _unitOfWork.Complete();
         }
         public bool DeleteEmployee(int id)
         {
-            var employee = _employeeRepository.GetById(id);
+            var employeeRepo = _unitOfWork.EmployeeRepository;
+            var employee = employeeRepo.GetById(id);
             if (employee is not null)
             {
-                return _employeeRepository.DeleteT(employee) > 0;
+                 employeeRepo.DeleteT(employee);
             }
-            return false;
+            return _unitOfWork.Complete() > 0;
 
             
            
         }
 
-        public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
+        public IEnumerable<EmployeeToReturnDto> GetAllEmployees(string SearchValue)
         {
-            return _employeeRepository.GetAllQueryable().Include(E=>E.Department).Where(E=>!E.IsDeleted).Select(employee=>new EmployeeToReturnDto()
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                Age = employee.Age,
-                salary = employee.salary,
-                ISActive = employee.ISActive,
-                Email = employee.Email,
-                Gender= employee.Gender.ToString(),
-                EmployeeType = employee.EmployeeType.ToString(),
-                Department = employee.Department.Name  //Eager Loading
+            return _unitOfWork.EmployeeRepository.GetAllQueryable().
+                Include(E => E.Department).
+                Where(E => !E.IsDeleted &&
+                (string.IsNullOrEmpty(SearchValue) ||
+                E.Name.ToLower().Contains(SearchValue.ToLower()))).
+
+                Select(employee => new EmployeeToReturnDto()
+                {
+                    Id = employee.Id,
+                    Name = employee.Name,
+                    Age = employee.Age,
+                    salary = employee.salary,
+                    ISActive = employee.ISActive,
+                    Email = employee.Email,
+                    Gender = employee.Gender.ToString(),
+                    EmployeeType = employee.EmployeeType.ToString(),
+                    Department = employee.Department.Name, //Eager Loading
+                    Image = employee.Image,
 
 
-            });
+                });
 
         }
 
@@ -122,7 +149,7 @@ namespace Demo.BLL.Services.Employees
 
         public EmployeeDetailsToReturnDTO? GetEmployeesById(int id)
         {
-            var Employee = _employeeRepository.GetById(id);
+            var Employee = _unitOfWork.EmployeeRepository.GetById(id);
 
             if (Employee is not null)
             {
@@ -144,6 +171,7 @@ namespace Demo.BLL.Services.Employees
                     LastModifiedBy = Employee.LastModifiedBy,
                     LastModifiedOn = Employee.LastModifiedOn,
                     Department= Employee.Department?.Name??"No Department", // Lazy Loading
+                    Image = Employee.Image,
 
 
 

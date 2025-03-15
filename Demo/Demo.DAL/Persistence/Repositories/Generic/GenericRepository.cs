@@ -35,25 +35,22 @@ namespace Demo.DAL.Persistence.Repositories.Generic
             //return _dbContext.Departments.Local.FirstOrDefault(d => d.Id == departmentId);
             return _dbContext.Set<T>().Find(departmentId); // search locally first 
         }
-        public int AddT(T Entity)
+        public void AddT(T Entity)
         {
             _dbContext.Set<T>().Add(Entity);
-            return _dbContext.SaveChanges();
         }
 
-        public int UpdateT(T Entity)
+        public void UpdateT(T Entity)
         {
             _dbContext.Set<T>().Update(Entity);
-            return _dbContext.SaveChanges();
         }
-        public int DeleteT(T Entity)
+        public void DeleteT(T Entity)
         {
             //_dbContext.Set<T>().Remove(Entity);
             //return _dbContext.SaveChanges();
 
             Entity.IsDeleted = true;
             _dbContext.Set<T>().Update(Entity);
-            return _dbContext.SaveChanges();
 
         }
 
