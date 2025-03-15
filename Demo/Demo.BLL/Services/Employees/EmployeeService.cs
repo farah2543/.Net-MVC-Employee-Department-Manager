@@ -59,7 +59,7 @@ namespace Demo.BLL.Services.Employees
             return _unitOfWork.Complete();
         }
 
-        public int UpdateEmployee(EmployeeToCreateUpdateDTO Entity)
+        public int UpdateEmployee(EmployeeToUpdateDTO Entity)
         {
             Employee employee = new Employee()
             {
@@ -81,6 +81,10 @@ namespace Demo.BLL.Services.Employees
            
 
             };
+            if (Entity.Image is not null)
+            {
+                employee.Image = _attachmentService.Upload(Entity.Image, "images");
+            }
             _unitOfWork.EmployeeRepository.UpdateT(employee);
             return _unitOfWork.Complete();
         }
@@ -92,10 +96,19 @@ namespace Demo.BLL.Services.Employees
             {
                  employeeRepo.DeleteT(employee);
             }
+
+
+            if (employee.Image is not null)
+            {
+               _attachmentService.Delete(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files",employee.Image));
+            }
+
+
             return _unitOfWork.Complete() > 0;
 
-            
-           
+
+
+
         }
 
         public IEnumerable<EmployeeToReturnDto> GetAllEmployees(string SearchValue)
