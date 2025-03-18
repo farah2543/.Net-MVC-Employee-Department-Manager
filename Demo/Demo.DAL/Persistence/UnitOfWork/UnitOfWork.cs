@@ -24,13 +24,19 @@ namespace Demo.DAL.Persistence.UnitOfWork
         }
       
 
-        public int Complete()
+        public async Task<int> CompleteAsync()
         {
-            return _dbContext.SaveChanges();
+            return await _dbContext.SaveChangesAsync();
         }
-        public void Dispose()
+        //public void Dispose()
+        //{
+        //    _dbContext.Dispose();   
+
+        //}
+
+        public async ValueTask DisposeAsync()
         {
-            _dbContext.Dispose();   
+              await _dbContext.DisposeAsync();   
 
         }
     }

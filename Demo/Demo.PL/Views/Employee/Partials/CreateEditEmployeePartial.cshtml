@@ -4,12 +4,14 @@
 
 @{
     var departments = new SelectList(
-        departmentService.GetAllDepartments()
+        await departmentService.GetAllDepartmentsAsync()
        as IEnumerable<DepartmentToReturnDto>, nameof(DepartmentToReturnDto.Id),
        nameof(DepartmentToReturnDto.Name)
            );
 
-    string imageName = employeeService.GetEmployeesById(Model.Id).Image;
+    var employee = await employeeService.GetEmployeesByIdAsync(Model.Id);
+    var imageName = employee.Image;
+
 }
 
 

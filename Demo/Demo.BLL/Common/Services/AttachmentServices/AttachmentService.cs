@@ -13,7 +13,7 @@ namespace Demo.BLL.Common.Services.AttachmentServices
 
         public const int _maxAllowedSize = 2_097_152;
 
-        public string? Upload(IFormFile file, string folderName)
+        public async Task <string?> UploadAsync(IFormFile file, string folderName)
         {
             var extension = Path.GetExtension(file.FileName);
 
@@ -33,13 +33,13 @@ namespace Demo.BLL.Common.Services.AttachmentServices
 
             using var fileStream = new FileStream(filePath,FileMode.Create);
 
-            file.CopyTo(fileStream);
+           await file.CopyToAsync(fileStream);
 
 
             return fileName;
 
         }
-        public bool Delete(string filePath)
+        public bool DeleteAsync(string filePath)
         {
             if (File.Exists(filePath))
             {

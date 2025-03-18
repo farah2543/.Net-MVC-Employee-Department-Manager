@@ -31,7 +31,7 @@ namespace Demo.BLL.Services.Employees
         }
 
 
-        public int CreateEmployee(EmployeeToCreateDTO Entity)
+        public async Task<int> CreateEmployeeAsync(EmployeeToCreateDTO Entity)
         {
             Employee employee = new Employee()
             {
@@ -53,13 +53,13 @@ namespace Demo.BLL.Services.Employees
             };
             if(Entity.Image is not null)
             {
-                employee.Image = _attachmentService.Upload(Entity.Image,"images");
+                employee.Image = await _attachmentService.UploadAsync(Entity.Image,"images");
             }
             _unitOfWork.EmployeeRepository.AddT(employee);
-            return _unitOfWork.Complete();
+            return await _unitOfWork.CompleteAsync();
         }
 
-        public int UpdateEmployee(EmployeeToUpdateDTO Entity)
+        public async Task<int> UpdateEmployeeAsync(EmployeeToUpdateDTO Entity)
         {
             Employee employee = new Employee()
             {
@@ -83,15 +83,15 @@ namespace Demo.BLL.Services.Employees
             };
             if (Entity.Image is not null)
             {
-                employee.Image = _attachmentService.Upload(Entity.Image, "images");
+                employee.Image = await _attachmentService.UploadAsync(Entity.Image, "images");
             }
             _unitOfWork.EmployeeRepository.UpdateT(employee);
-            return _unitOfWork.Complete();
+            return await _unitOfWork.CompleteAsync();
         }
-        public bool DeleteEmployee(int id)
+        public async Task<bool> DeleteEmployeeAsync(int id)
         {
-            var employeeRepo = _unitOfWork.EmployeeRepository;
-            var employee = employeeRepo.GetById(id);
+            var employeeRepo =  _unitOfWork.EmployeeRepository;
+            var employee = await employeeRepo.GetByIdAsync(id);
             if (employee is not null)
             {
                  employeeRepo.DeleteT(employee);
@@ -100,20 +100,20 @@ namespace Demo.BLL.Services.Employees
 
             if (employee.Image is not null)
             {
-               _attachmentService.Delete(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files",employee.Image));
+               _attachmentService.DeleteAsync(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files",employee.Image));
             }
 
 
-            return _unitOfWork.Complete() > 0;
+            return await _unitOfWork.CompleteAsync() > 0;
 
 
 
 
         }
 
-        public IEnumerable<EmployeeToReturnDto> GetAllEmployees(string SearchValue)
+        public async Task< IEnumerable<EmployeeToReturnDto>> GetAllEmployeesAsync(string SearchValue)
         {
-            return _unitOfWork.EmployeeRepository.GetAllQueryable().
+            return await _unitOfWork.EmployeeRepository.GetAllQueryable().
                 Include(E => E.Department).
                 Where(E => !E.IsDeleted &&
                 (string.IsNullOrEmpty(SearchValue) ||
@@ -133,11 +133,11 @@ namespace Demo.BLL.Services.Employees
                     Image = employee.Image,
 
 
-                });
+                }).ToListAsync();
 
         }
 
-        //public IEnumerable<EmployeeToReturnDto> GetAllEmployees()
+        //public IEnumerable<EmployeeToReturnDto> GetAllEmployeesAsync()
         //{
         //    var query = _employeeRepository.GetAllEnumrable().Where(E => !E.IsDeleted).Select(employee => new EmployeeToReturnDto()
         //    {
@@ -160,13 +160,13 @@ namespace Demo.BLL.Services.Employees
 
         //}
 
-        public EmployeeDetailsToReturnDTO? GetEmployeesById(int id)
+        public async Task<EmployeeDetailsToReturnDTO?> GetEmployeesByIdAsync(int id)
         {
-            var Employee = _unitOfWork.EmployeeRepository.GetById(id);
+            var Employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(id);
 
             if (Employee is not null)
             {
-                return new EmployeeDetailsToReturnDTO()
+                return  new EmployeeDetailsToReturnDTO()
                 {
                     Id = Employee.Id,
                     Name = Employee.Name,
