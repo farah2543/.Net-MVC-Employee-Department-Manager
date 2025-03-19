@@ -3,6 +3,8 @@ using Demo.DAL.Entities.Identity;
 using Demo.PL.ViewModels.Identitiy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Demo.DAL.Entities.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace Demo.PL.Controllers
 {
@@ -111,6 +113,50 @@ namespace Demo.PL.Controllers
             await _singInManager.SignOutAsync();
 
             return RedirectToAction(nameof(Login));
+        }
+        [HttpGet]
+
+        public IActionResult ForgetPassword()
+        {
+            return View();
+
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SendRestPasswordUrl(ForgetPasswordViewModel forgetPasswordVM)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var User = await _userManager.FindByEmailAsync(forgetPasswordVM.Email);
+
+                if (User is not null)
+                {
+                    var Token = await _userManager.GeneratePasswordResetTokenAsync(User);
+
+                    var url = Url.Action("ResetPassword", "Account", new { email = forgetPasswordVM.Email, token = Token }, Request.Scheme);
+
+                    var email = new DAL.Entities.Identity.Email()
+                    {
+                        TO = forgetPasswordVM.Email,
+                        Subject = "Reset Your Password",
+                        Body = url
+                    };
+                  //send mail
+
+
+
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid operation please try again");
+                }
+
+
+            }
+            return View();
+
         }
     }
 
