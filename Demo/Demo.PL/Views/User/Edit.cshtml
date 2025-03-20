@@ -1,0 +1,49 @@
+﻿@model UserViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Action = "Edit";
+
+}
+<h1>Edit User</h1>
+<div class = "row justify-content-center align-content-center mt-3"> 
+
+
+    <form method = "post" asp-controller="User" asp-action=@ViewBag.Action class = "col-8" enctype ="multipart/form-data">
+
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <div class="from-group mb-3">
+
+                 <label class="form-label" asp-for= "FName" >First Name</label>
+                <input asp-for="FName" class="form-control"> </input>
+                <span asp-validation-for="FName" class="text-danger"></span>
+            <div/>
+            <div class="from-group mb-3">
+
+                 <label class="form-label" asp-for= "LName" >Last Name</label>
+                <input asp-for="LName" class="form-control"> </input>
+                <span asp-validation-for="LName" class="text-danger"></span>
+            <div/>
+
+             <div class="from-group mb-3">
+
+                 <label class="form-label" asp-for= "Email" >Email</label>
+                <input asp-for="Email" class="form-control"> </input>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            <div/>
+        
+
+
+
+       
+       <div class "mt-4 m-auto">
+
+              <input class="btn btn-success" type = "submit" value= "Edit"></input>
+              <a asp-controller="User" asp-action="Index" class="btn btn-outline-dark">Back To List</a>
+                     
+      </div>
+                   
+    </form>
+
+</div>
