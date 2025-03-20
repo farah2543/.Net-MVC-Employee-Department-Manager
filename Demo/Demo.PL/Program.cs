@@ -1,4 +1,5 @@
 using Demo.BLL.Common.Services.AttachmentServices;
+using Demo.BLL.Common.Services.EmailSettings;
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.DAL.Entities.Identity;
@@ -36,6 +37,8 @@ namespace Demo.PL
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddTransient<IAttachmentService, AttachmentService>();
+            builder.Services.AddScoped<IEmailSettings, EmailSettings>();
+
 
             //builder.Services.AddScoped<UserManager<ApplicationUser>>();
             //builder.Services.AddScoped<SignInManager<ApplicationUser>>();

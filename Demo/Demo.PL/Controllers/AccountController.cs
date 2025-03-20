@@ -5,18 +5,21 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Demo.DAL.Entities.Identity;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Demo.BLL.Common.Services.EmailSettings;
 
 namespace Demo.PL.Controllers
 {
     public class AccountController : Controller
     {
-		private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _singInManager;
+        private readonly IEmailSettings _emailSettings;
 
-        public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> singInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> singInManager, IEmailSettings emailSettings)
         {
-			_userManager = userManager;
+            _userManager = userManager;
             _singInManager = singInManager;
+            _emailSettings = emailSettings;
         }
         [HttpGet]
         public IActionResult Register()
@@ -143,7 +146,10 @@ namespace Demo.PL.Controllers
                         Subject = "Reset Your Password",
                         Body = url
                     };
-                  //send mail
+
+                    _emailSettings.SendMail(email);
+                    return RedirectToAction(nameof(CheckInbox));
+
 
 
 
@@ -155,6 +161,14 @@ namespace Demo.PL.Controllers
 
 
             }
+            return View();
+
+        }
+
+        [HttpGet]
+
+        public IActionResult CheckInbox()
+        {
             return View();
 
         }
