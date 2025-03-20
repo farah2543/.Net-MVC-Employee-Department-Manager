@@ -172,6 +172,53 @@ namespace Demo.PL.Controllers
             return View();
 
         }
+
+
+        [HttpGet]
+
+        public IActionResult ResetPassword(string Email, string Token)
+        {
+            TempData["Email"] = Email;
+            TempData["Token"] = Token;
+
+            return View();
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordVM)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var email = TempData["Email"] as string;
+                var token = TempData["Token"] as string;
+
+                var user = await _userManager.FindByEmailAsync(email);
+
+                if (user is not null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, token, resetPasswordVM.Password);
+                    if (result.Succeeded)
+                    {
+                        return View(nameof(Login));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Opearation was not successful please try again later");
+                        return View(resetPasswordVM);
+
+                    }
+
+                }
+
+
+            }
+            ModelState.AddModelError(string.Empty, "Invalid operation please try again");
+
+            return View(resetPasswordVM);
+
+        }
+
     }
 
 }
