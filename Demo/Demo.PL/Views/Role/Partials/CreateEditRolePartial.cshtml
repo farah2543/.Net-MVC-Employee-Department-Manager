@@ -1,0 +1,36 @@
+﻿@model RoleViewModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+
+    <form method = "post" asp-controller="User" asp-action=@ViewBag.Action class = "col-8" enctype ="multipart/form-data">
+
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <div class="from-group mb-3">
+
+                 <label class="form-label" asp-for= "Name" >role Name</label>
+                <input asp-for="Name" class="form-control"> </input>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            <div/>
+
+
+
+            @if (ViewBag.Action == "Create" || ViewData["Title"] as string == "Create")
+            {
+            <div class "mt-4 m-auto">
+                <input class="btn btn-primary" type = "submit" value= "Create"></input>
+                <a asp-controller="Role" asp-action="Index" class="btn btn-outline-dark">Back To List</a>
+            </div>
+            }
+            else
+            {
+                <div class "mt-4 m-auto">
+                    <input class="btn btn-success" type = "submit" value= "Edit"></input>
+                    <a asp-controller="Role" asp-action="Index" class="btn btn-outline-dark">Back To List</a>
+                </div>
+            }
+    </form>
+

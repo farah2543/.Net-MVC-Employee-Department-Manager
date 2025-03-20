@@ -1,56 +1,81 @@
-﻿using Demo.BLL.DTOs.Employees;
-using Demo.DAL.Entities.Identity;
-using Demo.PL.ViewModels.Employee;
+﻿using Demo.DAL.Entities.Identity;
+using Demo.PL.ViewModels.Roles;
 using Demo.PL.ViewModels.Users;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.PL.Controllers
 {
-    public class UserController : Controller
+    public class RoleController : Controller
     {
         #region Services
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
 
-        public UserController(UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public RoleController(RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment)
         {
-            _userManager = userManager;
+            _roleManager = roleManager;
             _webHostEnvironment = webHostEnvironment;
         }
         #endregion
 
         #region Index
 
+
         [HttpGet]
         public async Task<IActionResult> Index(string SearchValue)
         {
             // Users
-            var usersQuery = _userManager.Users.AsQueryable();
+            var rolesQuery = _roleManager.Roles.AsQueryable();
             if (!string.IsNullOrEmpty(SearchValue)) // SearchValue = mariam
             {
-                usersQuery = usersQuery.Where(U => U.Email.ToLower().Contains(SearchValue.ToLower()));
+                rolesQuery = rolesQuery.Where(R => R.Name.ToLower().Contains(SearchValue.ToLower()));
             }
 
-            var usersList = await usersQuery.Select(U => new UserViewModel
+            var rolesList = await rolesQuery.Select(R => new RoleViewModel
             {
-                Id = U.Id,
-                FName = U.FName,
-                LName = U.LName,
-                Email = U.Email
+                Id = R.Id,
+                Name = R.Name,
+               
             }).ToListAsync();
 
-            foreach (var user in usersList)
-            {
-                user.Roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(user.Id));
-            }
 
-            return View(usersList);
+            return View(rolesList);
         }
         #endregion
+
+
+        #region Create
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(RoleViewModel roleViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                await _roleManager.CreateAsync(new IdentityRole
+                {
+                    Name = roleViewModel.Name
+                });
+
+                return View(nameof(Index));
+            }
+
+            return View(roleViewModel);
+        }
+
+
+
+        #endregion
+
         #region Details
 
         [HttpGet]
@@ -62,23 +87,21 @@ namespace Demo.PL.Controllers
                 return BadRequest(); //400
             }
 
-            var user = await _userManager.FindByIdAsync(id);
+            var role = await _roleManager.FindByIdAsync(id);
 
-            if(user is null)
+            if (role is null)
             {
                 return NotFound();
             }
 
-            var userVM = new UserViewModel()
+            var roleVM = new RoleViewModel()
             {
-                Id = user.Id,
-                FName = user.FName,
-                LName = user.LName,
-                Email = user.Email,
-                Roles = _userManager.GetRolesAsync(user).Result
+                Id = role.Id,
+                Name = role.Name,
+            
             };
 
-            return View(userVM);
+            return View(roleVM);
         }
 
         #endregion
@@ -95,22 +118,20 @@ namespace Demo.PL.Controllers
                 return BadRequest(); //400
             }
 
-            var user = await _userManager.FindByIdAsync(id);
+            var role = await _roleManager.FindByIdAsync(id);
 
-            if (user is null)
+            if (role is null)
             {
                 return NotFound(); //404
 
             }
-            var userVM = new UserViewModel()
+            var roleVM = new RoleViewModel()
             {
-                Id = user.Id,
-                FName = user.FName,
-                LName = user.LName,
-                Email = user.Email,
-                Roles = _userManager.GetRolesAsync(user).Result
+                Id = role.Id,
+                Name = role.Name,
+              
             };
-            return View(userVM);
+            return View(roleVM);
 
 
 
@@ -123,11 +144,11 @@ namespace Demo.PL.Controllers
         // Show the Edit From
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> Edit(string id, UserViewModel userVM)
+        public async Task<IActionResult> Edit(string id, RoleViewModel roleVM)
         {
             if (!ModelState.IsValid)
             {
-                return View(userVM);
+                return View(roleVM);
             }
 
             else
@@ -136,17 +157,15 @@ namespace Demo.PL.Controllers
 
                 try
                 {
-                    var user = await _userManager.FindByIdAsync(id);
-                    if (user is null)
+                    var role = await _roleManager.FindByIdAsync(id);
+                    if (role is null)
                     {
                         return NotFound(); //404
 
                     }
-                    user.FName = userVM.FName;
-                    user.LName = userVM.LName;  
-                    user.Email = userVM.Email;
+                    role.Name = roleVM.Name;
 
-                    var Result = await _userManager.UpdateAsync(user);
+                    var Result = await _roleManager.UpdateAsync(role);
 
 
                     if (Result.Succeeded)
@@ -156,7 +175,7 @@ namespace Demo.PL.Controllers
                     }
                     else
                     {
-                        message = "user cannot be Updated";
+                        message = "role cannot be Updated";
                         TempData["Message"] = message;
                         ModelState.AddModelError(string.Empty, message);
                     }
@@ -167,7 +186,7 @@ namespace Demo.PL.Controllers
                 catch (Exception ex)
                 {
 
-                    message = _webHostEnvironment.IsDevelopment() ? ex.Message : "user Cannot be updated";
+                    message = _webHostEnvironment.IsDevelopment() ? ex.Message : "role Cannot be updated";
 
                 }
                 return View(nameof(Index));
@@ -193,20 +212,18 @@ namespace Demo.PL.Controllers
                 return BadRequest(); //400
             }
 
-            var user = await _userManager.FindByIdAsync(id);
+            var role = await _roleManager.FindByIdAsync(id);
 
-            if (user is null)
+            if (role is null)
             {
                 return NotFound(); //404
 
             }
-            var userVM = new UserViewModel()
+            var userVM = new RoleViewModel()
             {
-                Id = user.Id,
-                FName = user.FName,
-                LName = user.LName,
-                Email = user.Email,
-                Roles = _userManager.GetRolesAsync(user).Result
+                Id = role.Id,
+                Name = role.Name,
+            
             };
             return View(userVM);
 
@@ -222,11 +239,11 @@ namespace Demo.PL.Controllers
 
             try
             {
-                var user = await _userManager.FindByIdAsync(id);
+                var user = await _roleManager.FindByIdAsync(id);
                 if (user is not null)
                 {
 
-                    await _userManager.DeleteAsync(user);
+                    await _roleManager.DeleteAsync(user);
                     return View(nameof(Index));
 
 
@@ -237,7 +254,7 @@ namespace Demo.PL.Controllers
             catch (Exception ex)
             {
 
-                message = _webHostEnvironment.IsDevelopment() ? ex.Message : "Error when deleting the user";
+                message = _webHostEnvironment.IsDevelopment() ? ex.Message : "Error when deleting the role";
 
             }
             ModelState.AddModelError(string.Empty, message);
@@ -247,12 +264,10 @@ namespace Demo.PL.Controllers
 
         }
 
-       
+
 
 
         #endregion
-
-
 
 
 
