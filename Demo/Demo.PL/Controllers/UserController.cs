@@ -2,6 +2,7 @@
 using Demo.DAL.Entities.Identity;
 using Demo.PL.ViewModels.Employee;
 using Demo.PL.ViewModels.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Demo.PL.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         #region Services

@@ -18,19 +18,35 @@
 
 
 
-            @if (ViewBag.Action == "Create" || ViewData["Title"] as string == "Create")
+            @if (ViewBag.Action == "Edit" || ViewData["Title"] as string == "Edit")
             {
-            <div class "mt-4 m-auto">
-                <input class="btn btn-primary" type = "submit" value= "Create"></input>
-                <a asp-controller="Role" asp-action="Index" class="btn btn-outline-dark">Back To List</a>
-            </div>
+                    <h3>Assign Users To Roles</h3>
+                        <div class="form-group">
+                                    @for (int i = 0; i < Model.Users.Count; i++)
+                                    {
+                                    <div class="form-check">
+                                        <input type="hidden" asp-for="Users[i].UserId" />
+                                        <input type="hidden" asp-for="Users[i].UserName" />
+                                        <input asp-for="Users[i].IsSelected" class="form-check-input" />
+                                        <label class="form-check-label">@Model.Users[i].UserName</label>
+                                    </div>
+                                    }
+                        </div>
+
+                    <div class "mt-4 m-auto">
+                        <input class="btn btn-success" type = "submit" value= "Edit"></input>
+                        <a asp-controller="Role" asp-action="Index" class="btn btn-outline-dark">Back To List</a>
+                    </div>
+           
             }
             else
             {
-                <div class "mt-4 m-auto">
-                    <input class="btn btn-success" type = "submit" value= "Edit"></input>
+                     <div class "mt-4 m-auto">
+                    <input class="btn btn-primary" type = "submit" value= "Create"></input>
                     <a asp-controller="Role" asp-action="Index" class="btn btn-outline-dark">Back To List</a>
                 </div>
+
+                
             }
     </form>
 
