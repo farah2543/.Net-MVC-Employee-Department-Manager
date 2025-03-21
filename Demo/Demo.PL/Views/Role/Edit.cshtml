@@ -1,0 +1,19 @@
+﻿@model RoleViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Action = "Edit";
+
+}
+
+
+<div class = "row justify-content-center align-content-center mt-3"> 
+
+<h1>Edit Role</h1>
+     <partial name = "Partials/CreateEditRolePartial"></partial>
+</div> 
+
+
+@section validationScripts {
+          <partial name="_ValidationScriptsPartial"></partial>
+}

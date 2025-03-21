@@ -3,18 +3,23 @@ using Demo.DAL.Entities.Identity;
 using Demo.PL.ViewModels.Identitiy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Demo.DAL.Entities.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Demo.BLL.Common.Services.EmailSettings;
 
 namespace Demo.PL.Controllers
 {
     public class AccountController : Controller
     {
-		private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _singInManager;
+        private readonly IEmailSettings _emailSettings;
 
-        public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> singInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> singInManager, IEmailSettings emailSettings)
         {
-			_userManager = userManager;
+            _userManager = userManager;
             _singInManager = singInManager;
+            _emailSettings = emailSettings;
         }
         [HttpGet]
         public IActionResult Register()
@@ -112,6 +117,108 @@ namespace Demo.PL.Controllers
 
             return RedirectToAction(nameof(Login));
         }
+        [HttpGet]
+
+        public IActionResult ForgetPassword()
+        {
+            return View();
+
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SendRestPasswordUrl(ForgetPasswordViewModel forgetPasswordVM)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var User = await _userManager.FindByEmailAsync(forgetPasswordVM.Email);
+
+                if (User is not null)
+                {
+                    var Token = await _userManager.GeneratePasswordResetTokenAsync(User);
+
+                    var url = Url.Action("ResetPassword", "Account", new { email = forgetPasswordVM.Email, token = Token }, Request.Scheme);
+
+                    var email = new DAL.Entities.Identity.Email()
+                    {
+                        TO = forgetPasswordVM.Email,
+                        Subject = "Reset Your Password",
+                        Body = url
+                    };
+
+                    _emailSettings.SendMail(email);
+                    return RedirectToAction(nameof(CheckInbox));
+
+
+
+
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid operation please try again");
+                }
+
+
+            }
+            return View();
+
+        }
+
+        [HttpGet]
+
+        public IActionResult CheckInbox()
+        {
+            return View();
+
+        }
+
+
+        [HttpGet]
+
+        public IActionResult ResetPassword(string Email, string Token)
+        {
+            TempData["Email"] = Email;
+            TempData["Token"] = Token;
+
+            return View();
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordVM)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var email = TempData["Email"] as string;
+                var token = TempData["Token"] as string;
+
+                var user = await _userManager.FindByEmailAsync(email);
+
+                if (user is not null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, token, resetPasswordVM.Password);
+                    if (result.Succeeded)
+                    {
+                        return View(nameof(Login));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Opearation was not successful please try again later");
+                        return View(resetPasswordVM);
+
+                    }
+
+                }
+
+
+            }
+            ModelState.AddModelError(string.Empty, "Invalid operation please try again");
+
+            return View(resetPasswordVM);
+
+        }
+
     }
 
 }
