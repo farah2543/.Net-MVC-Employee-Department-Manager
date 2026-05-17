@@ -1,0 +1,27 @@
+﻿@model EmployeeViewModel 
+@inject IDepartmentServices departmentService
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Action = "Create";
+
+
+    var departments = new SelectList(
+         departmentService.GetAllDepartmentsAsync()
+        as IEnumerable<DepartmentToReturnDto>, nameof(DepartmentToReturnDto.Id),
+        nameof(DepartmentToReturnDto.Name)
+    );
+
+}
+
+<div class = "row justify-content-center align-content-center mt-3"> 
+    <h1 class = "col-8 my-4 "> Create Employee </h1>
+     <partial name = "Partials/CreateEditEmployeePartial"></partial>
+
+</div>
+
+
+@section validationScripts {
+            <partial name="_ValidationScriptsPartial"></partial>
+
+}

@@ -1,0 +1,10 @@
+﻿@model DepartmentDetailsToReturnDTO
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Id = Model.Id;
+}
+
+<h1 class="my-5 w-75 m-auto">Department Details</h1>
+
+<partial name="Partials/DetailsDeleteDepartmentPartial"></partial>

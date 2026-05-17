@@ -1,3 +1,18 @@
+using Demo.BLL.Common.Services.AttachmentServices;
+using Demo.BLL.Common.Services.EmailSettings;
+using Demo.BLL.Services.Departments;
+using Demo.BLL.Services.Employees;
+using Demo.DAL.Entities.Identity;
+using Demo.DAL.Persistence.Data;
+using Demo.DAL.Persistence.Repositories.Departments;
+using Demo.DAL.Persistence.Repositories.Employees;
+using Demo.DAL.Persistence.UnitOfWork;
+using Demo.PL.Mapper.Profiles;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+
 namespace Demo.PL
 {
     public class Program
@@ -8,6 +23,48 @@ namespace Demo.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<ApplicationDbContext>((options)=> {
+
+                options.UseLazyLoadingProxies()
+                .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        
+            },ServiceLifetime.Scoped);
+            //builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentServices, DepartmentService>();
+            //builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddTransient<IAttachmentService, AttachmentService>();
+            builder.Services.AddScoped<IEmailSettings, EmailSettings>();
+
+
+            //builder.Services.AddScoped<UserManager<ApplicationUser>>();
+            //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+            //builder.Services.AddScoped<RoleManager<ApplicationUser>>();
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>((options) =>
+            {
+				options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 5;
+				options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+              
+            })
+				.AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).
+                AddCookie((options) =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.AccessDeniedPath = "/Home/Error";
+                    options.LogoutPath = "/Account/Login";
+
+                });
+
 
             var app = builder.Build();
 
@@ -19,16 +76,18 @@ namespace Demo.PL
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+          
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Register}/{id?}");
 
             app.Run();
         }
